@@ -1,0 +1,87 @@
+@use '../../styles/global' as *;
+
+.articles-page {
+  .articles-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: 1rem;
+      
+      @include responsive(mobile) {
+        font-size: 2rem;
+      }
+    }
+    
+    p {
+      color: $text-secondary;
+      font-size: 1.1rem;
+    }
+  }
+  
+  .articles-filters {
+    background: white;
+    padding: 2rem;
+    border-radius: $border-radius-lg;
+    margin-bottom: 2rem;
+    box-shadow: $shadow-sm;
+    
+    @include responsive(mobile) {
+      padding: 1.5rem;
+    }
+    
+    .filter-section {
+      margin-bottom: 1.5rem;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: $text-primary;
+      }
+      
+      .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .filter-tag {
+        @extend .tag;
+        cursor: pointer;
+        
+        &.active {
+          background: $primary-color;
+          color: white;
+        }
+      }
+    }
+  }
+  
+  .articles-content {
+    .articles-stats {
+      margin-bottom: 2rem;
+      color: $text-secondary;
+      font-size: 0.9rem;
+    }
+    
+    .no-articles {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: $text-secondary;
+      
+      h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: $text-primary;
+      }
+    }
+  }
+} 

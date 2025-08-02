@@ -1,0 +1,64 @@
+@use '../../styles/global' as *;
+
+.about-page {
+  .about-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: 1rem;
+      
+      @include responsive(mobile) {
+        font-size: 2rem;
+      }
+    }
+    
+    p {
+      color: $text-secondary;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+  
+  .about-content {
+    background: white;
+    padding: 3rem;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-sm;
+    
+    @include responsive(mobile) {
+      padding: 2rem 1.5rem;
+    }
+    
+    .about-section {
+      margin-bottom: 3rem;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: 1rem;
+      }
+      
+      p {
+        color: $text-secondary;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+      }
+      
+      ul {
+        color: $text-secondary;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+} 
