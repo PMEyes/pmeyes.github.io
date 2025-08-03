@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # 获取当前分支名
 current_branch=$(git symbolic-ref --short HEAD)
 
