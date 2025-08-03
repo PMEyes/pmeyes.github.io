@@ -18,20 +18,19 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '22.12.0'
-        cache: 'npm'
+        cache: 'yarn'
         
     - name: Install dependencies
       run: |
-        npm ci --no-optional --ignore-scripts
-        npm rebuild --no-optional
+        yarn install --frozen-lockfile
         
     - name: Generate articles
-      run: npm run generate-articles
+      run: yarn generate-articles
       
     - name: Build
       env:
         NODE_ENV: production
-      run: npm run build
+      run: yarn build
       
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
