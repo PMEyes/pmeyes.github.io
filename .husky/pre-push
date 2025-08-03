@@ -3,6 +3,13 @@ current_branch=$(git symbolic-ref --short HEAD)
 
 # 检查是否在 main 分支上
 if [ "$current_branch" = "main" ]; then
+    # 检查最近的提交信息，避免递归触发
+    last_commit_msg=$(git log -1 --pretty=%B)
+    if [[ "$last_commit_msg" == *"[skip ci]"* ]] || [[ "$last_commit_msg" == *"自动提交部署生成的文件"* ]]; then
+        echo "ℹ️  检测到自动提交，跳过部署以避免递归"
+        exit 0
+    fi
+    
     echo "🚀 检测到 main 分支 push，开始自动部署..."
     
     # 执行部署脚本
