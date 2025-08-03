@@ -15,8 +15,10 @@ $text-primary: #333;
 $text-secondary: #666;
 $text-muted: #999;
 
+$background-light: #f8f9fa;
 $border-color: #ddd;
 $border-radius: 4px;
+$border-radius-sm: 2px;
 $border-radius-lg: 8px;
 $border-radius-xl: 12px;
 
@@ -168,18 +170,27 @@ body {
 }
 
 .tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: color.adjust($secondary-color, $lightness: 45%);
   color: $text-secondary;
-  padding: 0.25rem 0.5rem;
-  border-radius: $border-radius;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
   font-size: 0.875rem;
+  font-weight: 500;
   margin: 0.25rem;
   transition: all $transition-normal;
+  border: 1px solid transparent;
+  min-height: 32px;
+  line-height: 1.2;
+  white-space: nowrap;
   
   &:hover {
     background: $primary-color;
     color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba($primary-color, 0.2);
   }
 }
 

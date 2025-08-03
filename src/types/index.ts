@@ -7,6 +7,7 @@ export interface Article {
   tags: string[];
   slug: string;
   readingTime: number;
+  folder?: string;
 }
 
 export interface ArticleMeta {
@@ -17,6 +18,7 @@ export interface ArticleMeta {
   tags: string[];
   slug: string;
   readingTime: number;
+  folder?: string;
 }
 
 export interface LocaleData {
