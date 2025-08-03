@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// 暂时禁用语法高亮以避免类型错误
+// import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-light';
+// import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Article, Language } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
@@ -39,7 +40,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
       if (articleData) {
         setArticle(articleData);
         const related = articleService.getRelatedArticles(articleSlug);
-        setRelatedArticles(related);
+        // 将ArticleMeta转换为Article类型
+        const relatedArticles = related.map(meta => ({
+          ...meta,
+          content: '' // 相关文章不需要完整内容
+        }));
+        setRelatedArticles(relatedArticles);
       } else {
         setError('文章未找到');
       }
@@ -111,14 +117,11 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
                 code({ node, inline, className, children, ...props }) {
                   const match = /language-(\w+)/.exec(className || '');
                   return !inline && match ? (
-                    <SyntaxHighlighter
-                      style={tomorrow}
-                      language={match[1]}
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, '')}
-                    </SyntaxHighlighter>
+                    <pre className={`language-${match[1]}`}>
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    </pre>
                   ) : (
                     <code className={className} {...props}>
                       {children}

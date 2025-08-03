@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Language } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
@@ -9,6 +9,7 @@ import Home from '@/pages/Home/Home';
 import Articles from '@/pages/Articles/Articles';
 import ArticleDetail from '@/pages/ArticleDetail/ArticleDetail';
 import About from '@/pages/About/About';
+import NotFound from '@/pages/NotFound/NotFound';
 
 function App() {
   const [language, setLanguage] = useState<Language>(languageService.getCurrentLanguage());
@@ -74,7 +75,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="app">
         <Navbar 
           language={language}
@@ -88,6 +89,7 @@ function App() {
             <Route path="/articles" element={<Articles contextValue={contextValue} />} />
             <Route path="/article/:slug" element={<ArticleDetail contextValue={contextValue} />} />
             <Route path="/about" element={<About contextValue={contextValue} />} />
+            <Route path="*" element={<NotFound contextValue={contextValue} />} />
           </Routes>
         </main>
       </div>

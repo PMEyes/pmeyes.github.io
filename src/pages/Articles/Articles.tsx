@@ -29,7 +29,7 @@ interface FolderNode {
 
 const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
   const { language, articles, loading, error, onSearch, onClearSearch, onRetry } = contextValue;
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [folderTree, setFolderTree] = useState<FolderNode[]>([]);
@@ -108,10 +108,10 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
     setSelectedFolder(folderPath);
     // 根据文件夹筛选文章
     if (folderPath) {
-      const folderName = folderPath.split('/').pop() || folderPath;
-      const filteredArticles = articles.filter(article => 
-        article.folder === folderPath || article.folder?.includes(folderName)
-      );
+      // const folderName = folderPath.split('/').pop() || folderPath;
+            // const filteredArticles = articles.filter(article =>
+      //   article.folder === folderPath || article.folder?.includes(folderName)
+      // );
       // 这里可以调用父组件的筛选方法
       // 暂时直接使用本地筛选
     }

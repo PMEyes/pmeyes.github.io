@@ -43,33 +43,36 @@ PM Eyes 是一个基于 React + TypeScript + Vite 构建的现代化博客网站
 
 ```
 pmeyes.github.io/
-├── src/
-│   ├── components/          # React组件
-│   │   └── Navbar.tsx      # 导航栏组件
-│   ├── pages/              # 页面组件
-│   │   ├── Home.tsx        # 首页
-│   │   ├── Articles.tsx    # 文章列表页
-│   │   ├── ArticleDetail.tsx # 文章详情页
-│   │   └── About.tsx       # 关于页面
-│   ├── services/           # 服务层
-│   ├── types/              # TypeScript类型定义
-│   ├── constants/          # 常量定义
-│   ├── locales/            # 多语言文件
-│   └── styles/             # 样式文件
-│       ├── global.scss     # 全局样式变量和混合器
-│       ├── components/     # 组件样式
-│       │   └── navbar.scss # 导航栏样式
-│       ├── pages/          # 页面样式
-│       │   ├── home.scss   # 首页样式
-│       │   ├── articles.scss # 文章列表页样式
-│       │   ├── article-detail.scss # 文章详情页样式
-│       │   └── about.scss  # 关于页面样式
-│       └── main.scss       # 主样式文件
+├── docs/                   # 技术文档
+│   ├── README.md           # 文档索引
+│   ├── ARCHITECTURE.md     # 项目架构说明
+│   ├── TECH_STACK.md       # 技术栈说明
+│   └── ROUTING_SOLUTION.md # 路由问题解决方案
 ├── articles/               # 文章内容（Markdown文件）
-└── public/                 # 静态资源
-    ├── logo.jpg            # 网站Logo
-    └── favicon.ico         # 网站图标
+│   └── README.md           # 文章编写指南
+├── src/                    # 源代码
+│   ├── components/         # React组件
+│   ├── pages/             # 页面组件
+│   ├── services/          # 服务层
+│   ├── types/             # TypeScript类型定义
+│   ├── styles/            # 样式文件
+│   └── data/              # 动态生成的数据
+├── scripts/               # 构建脚本
+│   └── generateArticles.js # 文章生成脚本
+└── public/                # 静态资源
+    ├── index.html         # 主页面
+    ├── _redirects         # 重定向配置
+    └── favicon.ico        # 网站图标
 ```
+
+## 📚 技术文档
+
+详细的技术文档请查看 [docs/](./docs/) 目录：
+
+- **[项目架构说明](./docs/ARCHITECTURE.md)** - 整体架构和设计理念
+- **[技术栈说明](./docs/TECH_STACK.md)** - 技术选型和版本信息
+- **[路由问题解决方案](./docs/ROUTING_SOLUTION.md)** - SPA路由处理方案
+- **[文章编写指南](./articles/README.md)** - 文章管理和发布流程
 
 ## 开发指南
 
@@ -161,8 +164,8 @@ readingTime: 预计阅读时间（分钟）
 
 ## 联系方式
 
-- 邮箱：contact@pmeyes.com
-- 微信公众号：PM Eyes
+- 邮箱：hjm100@126.com
+- 微信公众号：项界新探
 - LinkedIn：PM Eyes Blog
 
 ---

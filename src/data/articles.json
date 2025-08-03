@@ -1,70 +1,6 @@
 {
   "articles": [
     {
-      "id": "remote-team-project-management",
-      "title": "远程团队的项目管理最佳实践",
-      "excerpt": "分享在远程工作环境下，如何有效管理项目团队的经验和技巧。",
-      "content": "\n# 远程团队的项目管理最佳实践\n\n随着远程工作的普及，如何有效管理远程团队成为了项目管理者面临的新挑战。\n\n## 远程团队的特点\n\n### 优势\n- 人才池更大\n- 成本更低\n- 工作时间更灵活\n\n### 挑战\n- 沟通障碍\n- 时区差异\n- 文化差异\n- 团队凝聚力\n\n## 最佳实践\n\n### 1. 建立清晰的沟通机制\n\n- 选择合适的沟通工具\n- 制定沟通规范\n- 定期团队会议\n\n### 2. 使用合适的项目管理工具\n\n- 任务管理：Jira, Trello\n- 文档协作：Notion, Confluence\n- 视频会议：Zoom, Teams\n\n### 3. 建立信任文化\n\n- 结果导向\n- 透明管理\n- 及时反馈\n\n### 4. 关注团队建设\n\n- 虚拟团建活动\n- 个人关怀\n- 职业发展支持\n\n## 成功案例\n\n通过实施这些最佳实践，许多团队在远程环境下取得了成功。关键是要根据团队特点进行调整和优化。 ",
-      "publishedAt": "2024-01-25T00:00:00.000Z",
-      "tags": [
-        "远程工作",
-        "团队管理",
-        "项目管理"
-      ],
-      "slug": "remote-team-project-management",
-      "readingTime": 7,
-      "folder": "团队协作",
-      "filePath": "团队协作/远程团队的项目管理最佳实践.md"
-    },
-    {
-      "id": "test-dynamic-article-system",
-      "title": "测试动态文章系统",
-      "excerpt": "这是一个测试文章，用于验证动态文章系统是否正常工作。",
-      "content": "\n# 测试动态文章系统\n\n这是一个测试文章，用于验证动态文章系统是否正常工作。\n\n## 功能测试\n\n### 1. 自动扫描\n- 系统应该能够自动扫描 `articles/` 文件夹\n- 新添加的文章应该出现在导航中\n\n### 2. 文件夹结构\n- 文章应该按照文件夹结构进行分类\n- 左侧导航应该显示正确的文件夹树\n\n### 3. 文章信息\n- 标题、摘要、标签等信息应该正确显示\n- 阅读时间应该自动计算\n\n## 验证步骤\n\n1. 添加这篇文章后，运行 `npm run generate-articles`\n2. 启动开发服务器 `npm run dev`\n3. 检查文章是否出现在\"敏捷开发\"分类中\n4. 验证文章详情页是否正常显示\n\n## 结论\n\n如果这篇文章能够正常显示，说明动态文章系统工作正常。 ",
-      "publishedAt": "2024-01-30T00:00:00.000Z",
-      "tags": [
-        "测试",
-        "敏捷开发",
-        "系统验证"
-      ],
-      "slug": "test-dynamic-article-system",
-      "readingTime": 3,
-      "folder": "敏捷开发",
-      "filePath": "敏捷开发/测试文章.md"
-    },
-    {
-      "id": "agile-thinking-in-project-management",
-      "title": "项目管理中的敏捷思维",
-      "excerpt": "探讨如何在传统项目管理中融入敏捷思维，提高项目交付效率和质量。",
-      "content": "\n# 项目管理中的敏捷思维\n\n敏捷开发已经成为了现代软件开发的主流方法，但敏捷思维不仅仅适用于软件开发，它同样可以应用于各种类型的项目管理中。\n\n## 什么是敏捷思维？\n\n敏捷思维是一种以人为核心、迭代、递增的开发方法。它强调：\n\n- **个体和互动** 高于流程和工具\n- **工作的软件** 高于详尽的文档\n- **客户合作** 高于合同谈判\n- **响应变化** 高于遵循计划\n\n## 在项目管理中的应用\n\n### 1. 迭代式规划\n\n传统的项目管理往往采用瀑布模型，一次性制定完整的项目计划。而敏捷思维则建议：\n\n- 将项目分解为小的迭代周期\n- 每个迭代都有可交付的成果\n- 根据反馈不断调整后续计划\n\n### 2. 持续改进\n\n敏捷思维强调持续改进：\n\n- 定期回顾会议\n- 及时识别和解决问题\n- 不断优化工作流程\n\n### 3. 团队协作\n\n- 跨功能团队\n- 扁平化管理结构\n- 开放透明的沟通\n\n## 实施建议\n\n1. **从小开始**：选择一个试点项目\n2. **培训团队**：确保团队理解敏捷原则\n3. **工具支持**：选择合适的项目管理工具\n4. **持续学习**：鼓励团队学习和实践\n\n敏捷思维不是一套固定的规则，而是一种思维方式。它需要根据具体情况进行调整和优化。 ",
-      "publishedAt": "2024-01-15T00:00:00.000Z",
-      "tags": [
-        "项目管理",
-        "敏捷开发",
-        "团队协作"
-      ],
-      "slug": "agile-thinking-in-project-management",
-      "readingTime": 8,
-      "folder": "敏捷开发",
-      "filePath": "敏捷开发/项目管理中的敏捷思维.md"
-    },
-    {
-      "id": "digital-transformation-project-management",
-      "title": "数字化转型中的项目管理挑战",
-      "excerpt": "分析企业在数字化转型过程中面临的项目管理挑战，以及相应的解决方案。",
-      "content": "\n# 数字化转型中的项目管理挑战\n\n数字化转型已经成为企业发展的必然趋势，但在这个过程中，项目管理面临着前所未有的挑战。\n\n## 主要挑战\n\n### 1. 技术复杂性\n\n数字化转型涉及多种技术的整合：\n- 云计算\n- 大数据\n- 人工智能\n- 物联网\n\n### 2. 组织变革\n\n数字化转型不仅仅是技术变革，更是组织变革：\n- 流程再造\n- 文化转变\n- 技能提升\n\n### 3. 风险管理\n\n- 技术风险\n- 业务风险\n- 人员风险\n\n## 解决方案\n\n### 1. 分阶段实施\n\n- 制定清晰的转型路线图\n- 分阶段推进\n- 及时评估和调整\n\n### 2. 加强沟通\n\n- 建立有效的沟通机制\n- 确保各方理解和支持\n- 及时处理冲突和问题\n\n### 3. 人才培养\n\n- 投资员工培训\n- 引进专业人才\n- 建立学习型组织\n\n数字化转型是一个持续的过程，需要项目管理者的耐心和智慧。 ",
-      "publishedAt": "2024-01-20T00:00:00.000Z",
-      "tags": [
-        "数字化转型",
-        "项目管理",
-        "技术管理"
-      ],
-      "slug": "digital-transformation-project-management",
-      "readingTime": 6,
-      "folder": "数字化转型",
-      "filePath": "数字化转型/数字化转型中的项目管理挑战.md"
-    },
-    {
       "id": "understanding-high-level-project-management-exam",
       "title": "了解高项考试 - 信息系统项目管理师考试指南",
       "excerpt": "详细介绍信息系统项目管理师（高项）考试的报考流程、考试步骤、通过率以及备考策略，帮助考生全面了解考试要求。",
@@ -84,72 +20,6 @@
     }
   ],
   "folderTree": [
-    {
-      "path": "团队协作",
-      "name": "团队协作",
-      "articles": [
-        {
-          "id": "remote-team-project-management",
-          "title": "远程团队的项目管理最佳实践",
-          "slug": "remote-team-project-management",
-          "publishedAt": "2024-01-25T00:00:00.000Z",
-          "readingTime": 7,
-          "tags": [
-            "远程工作",
-            "团队管理",
-            "项目管理"
-          ]
-        }
-      ]
-    },
-    {
-      "path": "敏捷开发",
-      "name": "敏捷开发",
-      "articles": [
-        {
-          "id": "test-dynamic-article-system",
-          "title": "测试动态文章系统",
-          "slug": "test-dynamic-article-system",
-          "publishedAt": "2024-01-30T00:00:00.000Z",
-          "readingTime": 3,
-          "tags": [
-            "测试",
-            "敏捷开发",
-            "系统验证"
-          ]
-        },
-        {
-          "id": "agile-thinking-in-project-management",
-          "title": "项目管理中的敏捷思维",
-          "slug": "agile-thinking-in-project-management",
-          "publishedAt": "2024-01-15T00:00:00.000Z",
-          "readingTime": 8,
-          "tags": [
-            "项目管理",
-            "敏捷开发",
-            "团队协作"
-          ]
-        }
-      ]
-    },
-    {
-      "path": "数字化转型",
-      "name": "数字化转型",
-      "articles": [
-        {
-          "id": "digital-transformation-project-management",
-          "title": "数字化转型中的项目管理挑战",
-          "slug": "digital-transformation-project-management",
-          "publishedAt": "2024-01-20T00:00:00.000Z",
-          "readingTime": 6,
-          "tags": [
-            "数字化转型",
-            "项目管理",
-            "技术管理"
-          ]
-        }
-      ]
-    },
     {
       "path": "高项学习",
       "name": "高项学习",
@@ -171,5 +41,5 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-03T06:35:12.556Z"
+  "lastUpdated": "2025-08-03T07:03:45.499Z"
 }

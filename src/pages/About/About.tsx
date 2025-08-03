@@ -117,10 +117,10 @@ const About: React.FC<AboutProps> = ({ contextValue }) => {
             </p>
             <ul>
               <li>
-                {language === 'zh-CN' ? '邮箱：contact@pmeyes.com' : 'Email: contact@pmeyes.com'}
+                {language === 'zh-CN' ? '邮箱：hjm100@126.com' : 'Email: hjm100@126.com'}
               </li>
               <li>
-                {language === 'zh-CN' ? '微信公众号：PM Eyes' : 'WeChat Official Account: PM Eyes'}
+                {language === 'zh-CN' ? '微信公众号：项界新探' : 'WeChat Official Account: PM Eyes'}
               </li>
               <li>
                 {language === 'zh-CN' ? 'LinkedIn：PM Eyes Blog' : 'LinkedIn: PM Eyes Blog'}
