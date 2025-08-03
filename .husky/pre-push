@@ -10,6 +10,14 @@ if [ "$current_branch" = "main" ]; then
     
     if [ $? -eq 0 ]; then
         echo "✅ 部署成功！"
+        
+        # 检查是否有新文件需要提交
+        if [ -n "$(git status --porcelain)" ]; then
+            echo "📝 发现新文件，正在提交..."
+            git add .
+            git commit -m "chore: 自动提交部署生成的文件 [skip ci]"
+            echo "✅ 文件已提交"
+        fi
     else
         echo "❌ 部署失败，请检查错误信息"
         exit 1
