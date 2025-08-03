@@ -1,11 +1,13 @@
-name: Deploy to GitHub Pages
+name: Build
 
 on:
   push:
-    branches: [ gh-pages ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     
     steps:
@@ -32,9 +34,8 @@ jobs:
         NODE_ENV: production
       run: npm run build
       
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        cname: pmeyes.github.io 
+        name: dist-files
+        path: dist/ 
