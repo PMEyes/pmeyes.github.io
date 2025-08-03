@@ -35,8 +35,6 @@ function pwaPlugin() {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), pwaPlugin()],
-  // GitHub Pages配置 - 根据环境设置不同的base路径
-  base: process.env.NODE_ENV === 'production' ? '/pmeyes.github.io/' : '/',
   resolve: {
     alias: {
       '@': resolve('./src'),
@@ -53,14 +51,13 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    // 确保构建输出适合 GitHub Pages
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
         },
-        // 确保资源路径正确
+        // 资源文件命名
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.')
           const ext = info[info.length - 1]
@@ -74,29 +71,21 @@ export default defineConfig({
         },
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
-        // 确保模块类型正确
-        format: 'es',
       },
     },
-    // 确保构建后的文件大小合理
     chunkSizeWarningLimit: 1000,
-    // 确保正确的模块类型
     target: 'esnext',
   },
   server: {
-    // 开发服务器配置
     port: 3000,
     open: true,
-    // 处理PWA相关文件请求
     fs: {
       allow: ['..']
     }
   },
   preview: {
-    // 预览服务器配置
     port: 4173,
   },
-  // 禁用PWA相关功能，避免开发环境错误
   define: {
     __VUE_PROD_DEVTOOLS__: false,
   },
