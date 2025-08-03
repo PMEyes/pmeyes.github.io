@@ -13,7 +13,6 @@ files_to_check=(
     "vite.config.ts"
     "index.html"
     "public/404.html"
-    ".github/workflows/deploy.yml"
     "scripts/deploy.sh"
 )
 
@@ -35,10 +34,19 @@ else
     exit 1
 fi
 
-if grep -q '"predeploy"' package.json; then
-    echo "✅ predeploy 脚本存在"
+# 检查 deploy.sh 脚本内容
+echo "📝 检查 deploy.sh 脚本内容..."
+if grep -q "npm run build" scripts/deploy.sh; then
+    echo "✅ deploy.sh 包含构建步骤"
 else
-    echo "❌ predeploy 脚本不存在"
+    echo "❌ deploy.sh 缺少构建步骤"
+    exit 1
+fi
+
+if grep -q "gh-pages -d dist" scripts/deploy.sh; then
+    echo "✅ deploy.sh 包含部署步骤"
+else
+    echo "❌ deploy.sh 缺少部署步骤"
     exit 1
 fi
 
@@ -99,6 +107,6 @@ echo "📝 下一步："
 echo "1. 推送代码到 GitHub: git push origin main"
 echo "2. 在 GitHub 仓库设置中启用 Pages"
 echo "3. 选择 gh-pages 分支作为源"
-echo "4. 等待 GitHub Actions 完成部署"
+echo "4. 等待自动部署完成"
 echo ""
 echo "🌍 部署完成后访问: https://pmeyes.github.io" 

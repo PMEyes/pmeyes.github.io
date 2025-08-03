@@ -16,7 +16,6 @@
     "preview": "vite preview",
     "generate-articles": "node scripts/generateArticles.js",
     "deploy": "./scripts/deploy.sh",
-    "predeploy": "npm run build",
     "prepare": "husky"
   },
   "dependencies": {
