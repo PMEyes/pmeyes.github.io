@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "homepage": "https://pmeyes.github.io",
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "npm run generate-articles && vite",
     "build": "npm run generate-articles && tsc && NODE_ENV=production vite build",
