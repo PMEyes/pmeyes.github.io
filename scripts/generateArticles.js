@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import matter from 'gray-matter';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,6 +10,116 @@ const __dirname = path.dirname(__filename);
 // 文章文件夹路径
 const ARTICLES_DIR = path.join(__dirname, '../articles');
 const OUTPUT_FILE = path.join(__dirname, '../src/data/articles.json');
+const CACHE_FILE = path.join(__dirname, '../src/data/.articles-cache.json');
+
+// 计算文件哈希值
+function calculateFileHash(filePath) {
+  const content = fs.readFileSync(filePath, 'utf-8');
+  return crypto.createHash('md5').update(content).digest('hex');
+}
+
+// 获取文件修改时间
+function getFileMtime(filePath) {
+  return fs.statSync(filePath).mtime.getTime();
+}
+
+// 检查文件是否有修改
+function hasFileChanges() {
+  try {
+    // 如果缓存文件不存在，需要重新生成
+    if (!fs.existsSync(CACHE_FILE)) {
+      console.log('缓存文件不存在，需要重新生成文章数据');
+      return true;
+    }
+
+    // 读取缓存文件
+    const cache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+    
+    // 扫描文章文件夹，检查是否有文件变化
+    const currentFiles = scanFiles(ARTICLES_DIR);
+    
+    // 检查是否有新文件、删除的文件或修改的文件
+    for (const file of currentFiles) {
+      const relativePath = path.relative(ARTICLES_DIR, file);
+      
+      if (!cache.files[relativePath]) {
+        console.log(`发现新文件: ${relativePath}`);
+        return true;
+      }
+      
+      const currentHash = calculateFileHash(file);
+      const currentMtime = getFileMtime(file);
+      
+      if (cache.files[relativePath].hash !== currentHash || 
+          cache.files[relativePath].mtime !== currentMtime) {
+        console.log(`文件已修改: ${relativePath}`);
+        return true;
+      }
+    }
+    
+    // 检查是否有删除的文件
+    for (const cachedFile in cache.files) {
+      const fullPath = path.join(ARTICLES_DIR, cachedFile);
+      if (!fs.existsSync(fullPath)) {
+        console.log(`文件已删除: ${cachedFile}`);
+        return true;
+      }
+    }
+    
+    console.log('文章文件无变化，跳过生成');
+    return false;
+    
+  } catch (error) {
+    console.log('检查文件变化时出错，重新生成文章数据');
+    return true;
+  }
+}
+
+// 扫描所有文件（包括目录）
+function scanFiles(dir, basePath = '') {
+  const files = [];
+  const items = fs.readdirSync(dir);
+  
+  for (const item of items) {
+    const fullPath = path.join(dir, item);
+    const stat = fs.statSync(fullPath);
+    
+    if (stat.isDirectory()) {
+      // 递归扫描子文件夹
+      const subFiles = scanFiles(fullPath, path.join(basePath, item));
+      files.push(...subFiles);
+    } else if (item.endsWith('.md')) {
+      // 只处理 Markdown 文件
+      files.push(fullPath);
+    }
+  }
+  
+  return files;
+}
+
+// 更新缓存文件
+function updateCache(articles) {
+  const files = {};
+  
+  // 扫描所有文件并记录哈希值和修改时间
+  const allFiles = scanFiles(ARTICLES_DIR);
+  
+  for (const file of allFiles) {
+    const relativePath = path.relative(ARTICLES_DIR, file);
+    files[relativePath] = {
+      hash: calculateFileHash(file),
+      mtime: getFileMtime(file)
+    };
+  }
+  
+  const cache = {
+    files,
+    lastUpdated: new Date().toISOString(),
+    articleCount: articles.length
+  };
+  
+  fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2));
+}
 
 // 扫描文章文件夹
 function scanArticles(dir, basePath = '') {
@@ -87,6 +198,14 @@ function generateFolderTree(articles) {
 // 主函数
 function main() {
   try {
+    console.log('检查文章文件变化...');
+    
+    // 检查是否有文件变化
+    if (!hasFileChanges()) {
+      console.log('✅ 文章文件无变化，跳过生成');
+      return;
+    }
+    
     console.log('开始扫描文章文件夹...');
     
     // 扫描所有文章
@@ -111,7 +230,10 @@ function main() {
     // 写入文件
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
     
-    console.log(`成功生成文章数据：`);
+    // 更新缓存
+    updateCache(articles);
+    
+    console.log(`✅ 成功生成文章数据：`);
     console.log(`- 文章数量: ${articles.length}`);
     console.log(`- 文件夹数量: ${folderTree.length}`);
     console.log(`- 输出文件: ${OUTPUT_FILE}`);
