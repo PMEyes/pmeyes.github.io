@@ -74,10 +74,14 @@ export default defineConfig({
         },
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
+        // 确保模块类型正确
+        format: 'es',
       },
     },
     // 确保构建后的文件大小合理
     chunkSizeWarningLimit: 1000,
+    // 确保正确的模块类型
+    target: 'esnext',
   },
   server: {
     // 开发服务器配置

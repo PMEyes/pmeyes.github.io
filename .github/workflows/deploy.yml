@@ -27,6 +27,8 @@ jobs:
       run: npm run generate-articles
       
     - name: Build
+      env:
+        NODE_ENV: production
       run: npm run build
       
     - name: Deploy to GitHub Pages
