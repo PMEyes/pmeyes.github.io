@@ -17,17 +17,13 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '18.20.8'
         cache: 'npm'
         
-    - name: Clear npm cache
-      run: npm cache clean --force
-      
     - name: Install dependencies
       run: |
-        rm -rf node_modules package-lock.json
-        npm install --no-optional
-        npm rebuild
+        npm ci --no-optional --ignore-scripts
+        npm rebuild --no-optional
         
     - name: Generate articles
       run: npm run generate-articles
