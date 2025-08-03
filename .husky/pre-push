@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 获取当前分支名
+current_branch=$(git symbolic-ref --short HEAD)
+
+# 检查是否在 main 分支上
+if [ "$current_branch" = "main" ]; then
+    echo "🚀 检测到 main 分支 push，开始自动部署..."
+    
+    # 执行部署脚本
+    npm run deploy
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ 部署成功！"
+    else
+        echo "❌ 部署失败，请检查错误信息"
+        exit 1
+    fi
+else
+    echo "ℹ️  当前分支: $current_branch，跳过自动部署"
+fi 
