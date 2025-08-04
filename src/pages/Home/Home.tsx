@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
-import { ArticleMeta, Language } from '@/types';
+import { ArticleMeta, Language, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
 import './Home.scss';
@@ -10,6 +10,7 @@ import './Home.scss';
 interface HomeProps {
   contextValue: {
     language: Language;
+    theme: Theme;
     articles: ArticleMeta[];
     loading: boolean;
     error: string | null;
@@ -98,11 +99,11 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
             {latestArticles.map((article) => (
               <article key={article.id} className="article-card">
                 <div className="article-meta">
-                  <time dateTime={article.publishedAt}>
+                  <span className="article-date">
                     {getLocaleDate(article.publishedAt)}
-                  </time>
-                  <span className="reading-time">
-                    {languageService.getText('ARTICLE_READ_TIME', { minutes: article.readingTime })}
+                  </span>
+                  <span className="article-reading-time">
+                    {article.readingTime} {languageService.getText('MIN_READ')}
                   </span>
                 </div>
                 <h3 className="article-title">
@@ -112,50 +113,40 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
                 </h3>
                 <p className="article-excerpt">{article.excerpt}</p>
                 <div className="article-tags">
-                  {article.tags.map((tag) => (
+                  {article.tags.slice(0, 3).map((tag) => (
                     <span key={tag} className="tag">
                       {tag}
                     </span>
                   ))}
                 </div>
-                <Link 
-                  to={`/article/${article.slug}`} 
-                  className="read-more-link"
-                >
-                  {languageService.getText('READ_MORE')} →
-                </Link>
               </article>
             ))}
           </div>
-          {articles.length > 6 && (
-            <div className="view-all-container">
-              <Link to="/articles" className="button">
-                {languageService.getText('VIEW_ALL_ARTICLES')}
-              </Link>
-            </div>
-          )}
+          <div className="view-all-container">
+            <Link to="/articles" className="button button-outline">
+              {languageService.getText('VIEW_ALL_ARTICLES')}
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* 标签云 */}
-      <section className="tags-section">
-        <div className="container">
-          <h2 className="section-title">
-            {languageService.getText('ALL_TAGS')}
-          </h2>
-          <div className="tags-cloud">
-            {tags.map((tag) => (
-              <Link 
-                key={tag} 
-                to={`/articles?tag=${encodeURIComponent(tag)}`}
-                className="tag-link"
-              >
-                {tag}
-              </Link>
-            ))}
+      {tags.length > 0 && (
+        <section className="tags-section">
+          <div className="container">
+            <h2 className="section-title">
+              {languageService.getText('POPULAR_TAGS')}
+            </h2>
+            <div className="tags-cloud">
+              {tags.slice(0, 20).map((tag) => (
+                <span key={tag} className="tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };

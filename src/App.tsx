@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { Language } from '@/types';
+import { Language, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
+import { themeService } from '@/services/themeService';
 import { articleService } from '@/services/articleService';
 import { ArticleMeta, SearchFilters } from '@/types';
 import Navbar from '@/components/Navbar/Navbar';
@@ -9,10 +10,12 @@ import Home from '@/pages/Home/Home';
 import Articles from '@/pages/Articles/Articles';
 import ArticleDetail from '@/pages/ArticleDetail/ArticleDetail';
 import About from '@/pages/About/About';
+import ThemePreview from '@/pages/ThemePreview/ThemePreview';
 import NotFound from '@/pages/NotFound/NotFound';
 
 function App() {
   const [language, setLanguage] = useState<Language>(languageService.getCurrentLanguage());
+  const [theme, setTheme] = useState<Theme>(themeService.getCurrentTheme());
   const [articles, setArticles] = useState<ArticleMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +26,8 @@ function App() {
 
   useEffect(() => {
     loadArticles();
+    // 初始化主题
+    themeService.initializeTheme();
   }, []);
 
   // 监听语言变化，更新页面标题
@@ -47,6 +52,11 @@ function App() {
   const handleLanguageChange = (newLanguage: Language) => {
     languageService.setLanguage(newLanguage);
     setLanguage(newLanguage);
+  };
+
+  const handleThemeChange = (newTheme: Theme) => {
+    themeService.setTheme(newTheme);
+    setTheme(newTheme);
   };
 
   const handleSearch = async (filters: SearchFilters) => {
@@ -75,11 +85,13 @@ function App() {
 
   const contextValue = {
     language,
+    theme,
     articles,
     loading,
     error,
     searchFilters,
     onLanguageChange: handleLanguageChange,
+    onThemeChange: handleThemeChange,
     onSearch: handleSearch,
     onClearSearch: handleClearSearch,
     onRetry: loadArticles,
@@ -90,7 +102,9 @@ function App() {
       <div className="app">
         <Navbar 
           language={language}
+          theme={theme}
           onLanguageChange={handleLanguageChange}
+          onThemeChange={handleThemeChange}
           onSearch={handleSearch}
           searchFilters={searchFilters}
         />
@@ -100,6 +114,7 @@ function App() {
             <Route path="/articles" element={<Articles contextValue={contextValue} />} />
             <Route path="/article/:slug" element={<ArticleDetail contextValue={contextValue} />} />
             <Route path="/about" element={<About contextValue={contextValue} />} />
+            <Route path="/themes" element={<ThemePreview currentTheme={theme} language={language} onThemeChange={handleThemeChange} />} />
             <Route path="*" element={<NotFound contextValue={contextValue} />} />
           </Routes>
         </main>

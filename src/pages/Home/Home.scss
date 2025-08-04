@@ -8,9 +8,50 @@
     color: white;
     padding: 4rem 2rem;
     text-align: center;
+    transition: background $transition-normal;
     
     @include responsive(mobile) {
       padding: 3rem 1rem;
+    }
+    
+    // 默认主题
+    .theme-default & {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    // 阳光主题
+    .theme-sunny & {
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    }
+    
+    // 宁静主题
+    .theme-calm & {
+      background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+    }
+    
+    // 活力主题
+    .theme-energetic & {
+      background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%);
+    }
+    
+    // 温馨主题
+    .theme-cozy & {
+      background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%);
+    }
+    
+    // 专业主题
+    .theme-professional & {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    }
+    
+    // 白天主题
+    .theme-day & {
+      background: linear-gradient(135deg, #2196f3 0%, #64b5f6 100%);
+    }
+    
+    // 夜间主题
+    .theme-night & {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
     }
     
     .hero-content {
@@ -93,9 +134,15 @@
   .tags-section {
     background: $light-color;
     padding: 4rem 0;
+    transition: background-color $transition-normal;
     
     @include responsive(mobile) {
       padding: 3rem 1rem;
+    }
+    
+    // 夜间主题的标签云背景
+    .theme-night & {
+      background: var(--background-light);
     }
     
     .tags-cloud {

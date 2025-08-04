@@ -23,6 +23,13 @@
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
+    transition: background-color $transition-normal, box-shadow $transition-normal;
+    
+    // 夜间主题
+    .theme-night & {
+      background: var(--background-dark);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
     
     @include responsive(mobile) {
       display: none;
@@ -38,6 +45,13 @@
       flex-direction: column;
       justify-content: center;
       min-height: 80px;
+      transition: background-color $transition-normal, box-shadow $transition-normal;
+      
+      // 夜间主题
+      .theme-night & {
+        background: var(--background-dark);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
       
       h3 {
         font-size: 1.25rem;
@@ -76,6 +90,13 @@
       flex-direction: column;
       justify-content: center;
       min-height: 80px;
+      transition: background-color $transition-normal, box-shadow $transition-normal;
+      
+      // 夜间主题
+      .theme-night & {
+        background: var(--background-dark);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
       
       @include responsive(mobile) {
         padding: 1rem;
@@ -94,22 +115,28 @@
           margin-bottom: 1rem;
         }
         
-        .folder-selector-btn {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0.75rem 1rem;
-          background: white;
-          border: 1px solid $border-color;
-          border-radius: $border-radius;
-          cursor: pointer;
-          transition: all $transition-normal;
-          
-          &:hover {
-            border-color: $primary-color;
-            background: rgba($primary-color, 0.05);
-          }
+                  .folder-selector-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid $border-color;
+            border-radius: $border-radius;
+            cursor: pointer;
+            transition: all $transition-normal;
+            
+            // 夜间主题
+            .theme-night & {
+              background: var(--background-dark);
+              border-color: var(--border-color);
+            }
+            
+            &:hover {
+              border-color: $primary-color;
+              background: rgba($primary-color, 0.05);
+            }
           
           .folder-selector-text {
             font-size: 0.9rem;

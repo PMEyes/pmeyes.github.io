@@ -1,0 +1,331 @@
+.theme-switcher {
+  position: relative;
+  display: inline-block;
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px var(--shadow-color);
+
+    &:hover {
+      background: var(--light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--primary), 0.2);
+    }
+
+    @media (max-width: 768px) {
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+    
+    // 在移动端菜单中的特殊样式
+    .mobile-theme-switcher & {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      min-width: auto;
+      
+      .theme-switcher__label {
+        font-size: 0.875rem;
+      }
+      
+      .theme-switcher__icon {
+        width: 16px;
+        height: 16px;
+      }
+      
+      .theme-switcher__arrow {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    color: var(--primary);
+
+    @media (max-width: 768px) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__label {
+    font-weight: 500;
+  }
+
+  &__arrow {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.3s ease;
+    color: var(--text-secondary);
+
+    &.open {
+      transform: rotate(180deg);
+    }
+
+    @media (max-width: 768px) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 320px;
+    background: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    z-index: 1000;
+    animation: slideDown 0.3s ease;
+
+    @media (max-width: 768px) {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.3s ease;
+      max-height: 85vh;
+      overflow: hidden;
+      z-index: 1001; // 确保在移动端菜单之上
+    }
+  }
+
+  &__header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+
+      @media (max-width: 768px) {
+        font-size: 1.25rem;
+        margin: 0 0 0.75rem 0;
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      padding: 1.25rem 1.5rem 1rem;
+    }
+  }
+
+  &__options {
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+
+    @media (max-width: 768px) {
+      padding: 1rem 1.5rem;
+      max-height: calc(85vh - 150px);
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+
+    &:hover {
+      background: var(--background-light);
+      border-color: var(--border-color);
+    }
+
+    &.active {
+      background: rgba(0, 123, 255, 0.1);
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      padding: 1rem 0.75rem;
+      gap: 1rem;
+      
+      &:active {
+        background: var(--background-light);
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  &__option-preview {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__color-preview {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+
+    @media (max-width: 768px) {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+    }
+  }
+
+  &__option-info {
+    flex: 1;
+    min-width: 0;
+
+    h4 {
+      margin: 0 0 0.25rem 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+
+      @media (max-width: 768px) {
+        font-size: 0.95rem;
+        margin: 0 0 0.4rem 0;
+      }
+    }
+
+    p {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+
+      @media (max-width: 768px) {
+        font-size: 0.8rem;
+        margin: 0 0 0.5rem 0;
+      }
+    }
+  }
+
+  &__mood {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--light);
+    color: var(--text-secondary);
+    font-size: 0.625rem;
+    font-weight: 500;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    @media (max-width: 768px) {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.7rem;
+    }
+  }
+
+  &__check {
+    width: 16px;
+    height: 16px;
+    color: var(--primary);
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: 999;
+
+    @media (max-width: 768px) {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 滚动条样式
+.theme-switcher__options {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--background-light);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--text-secondary);
+    }
+  }
+} 

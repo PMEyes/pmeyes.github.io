@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
-import { Language, SearchFilters } from '@/types';
+import { Language, SearchFilters, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
+import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher';
 import './Navbar.scss';
 
 interface NavbarProps {
   language: Language;
+  theme: Theme;
   onLanguageChange: (language: Language) => void;
+  onThemeChange: (theme: Theme) => void;
   onSearch: (filters: SearchFilters) => void;
   searchFilters: SearchFilters;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
   language,
+  theme,
   onLanguageChange,
+  onThemeChange,
   onSearch,
   searchFilters,
 }) => {
@@ -85,6 +90,12 @@ const Navbar: React.FC<NavbarProps> = ({
             {languageService.getText('ARTICLES')}
           </Link>
           <Link 
+            to="/themes" 
+            className={`nav-link ${isActive('/themes') ? 'active' : ''}`}
+          >
+            {languageService.getText('THEME_PREVIEW_NAV')}
+          </Link>
+          <Link 
             to="/about" 
             className={`nav-link ${isActive('/about') ? 'active' : ''}`}
           >
@@ -92,20 +103,30 @@ const Navbar: React.FC<NavbarProps> = ({
           </Link>
         </div>
 
-        <div className="navbar-language">
-          <div className="language-switcher">
-            <button
-              className={`language-btn ${language === 'zh-CN' ? 'active' : ''}`}
-              onClick={() => handleLanguageChange('zh-CN')}
-            >
-              {languageService.getText('CHINESE')}
-            </button>
-            <button
-              className={`language-btn ${language === 'en-US' ? 'active' : ''}`}
-              onClick={() => handleLanguageChange('en-US')}
-            >
-              {languageService.getText('ENGLISH')}
-            </button>
+        <div className="navbar-controls">
+          <div className="navbar-language">
+            <div className="language-switcher">
+              <button
+                className={`language-btn ${language === 'zh-CN' ? 'active' : ''}`}
+                onClick={() => handleLanguageChange('zh-CN')}
+              >
+                {languageService.getText('CHINESE')}
+              </button>
+              <button
+                className={`language-btn ${language === 'en-US' ? 'active' : ''}`}
+                onClick={() => handleLanguageChange('en-US')}
+              >
+                {languageService.getText('ENGLISH')}
+              </button>
+            </div>
+          </div>
+
+          <div className="navbar-theme">
+            <ThemeSwitcher 
+              currentTheme={theme}
+              language={language}
+              onThemeChange={onThemeChange}
+            />
           </div>
         </div>
 
@@ -137,31 +158,47 @@ const Navbar: React.FC<NavbarProps> = ({
               {languageService.getText('ARTICLES')}
             </Link>
             <Link 
+              to="/themes" 
+              className={`mobile-nav-link ${isActive('/themes') ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              {languageService.getText('THEME_PREVIEW_NAV')}
+            </Link>
+            <Link 
               to="/about" 
               className={`mobile-nav-link ${isActive('/about') ? 'active' : ''}`}
               onClick={closeMobileMenu}
             >
               {languageService.getText('ABOUT')}
             </Link>
-            <div className="mobile-language-switcher">
-              <button
-                className={`language-btn ${language === 'zh-CN' ? 'active' : ''}`}
-                onClick={() => {
-                  handleLanguageChange('zh-CN');
-                  closeMobileMenu();
-                }}
-              >
-                {languageService.getText('CHINESE')}
-              </button>
-              <button
-                className={`language-btn ${language === 'en-US' ? 'active' : ''}`}
-                onClick={() => {
-                  handleLanguageChange('en-US');
-                  closeMobileMenu();
-                }}
-              >
-                {languageService.getText('ENGLISH')}
-              </button>
+            <div className="mobile-controls">
+              <div className="mobile-language-switcher">
+                <button
+                  className={`language-btn ${language === 'zh-CN' ? 'active' : ''}`}
+                  onClick={() => {
+                    handleLanguageChange('zh-CN');
+                    closeMobileMenu();
+                  }}
+                >
+                  {languageService.getText('CHINESE')}
+                </button>
+                <button
+                  className={`language-btn ${language === 'en-US' ? 'active' : ''}`}
+                  onClick={() => {
+                    handleLanguageChange('en-US');
+                    closeMobileMenu();
+                  }}
+                >
+                  {languageService.getText('ENGLISH')}
+                </button>
+              </div>
+              <div className="mobile-theme-switcher">
+                <ThemeSwitcher 
+                  currentTheme={theme}
+                  language={language}
+                  onThemeChange={onThemeChange}
+                />
+              </div>
             </div>
           </div>
         </div>

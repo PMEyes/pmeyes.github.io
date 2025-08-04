@@ -32,6 +32,13 @@
     padding: 3rem;
     border-radius: $border-radius-lg;
     box-shadow: $shadow-sm;
+    transition: background-color $transition-normal, box-shadow $transition-normal;
+    
+    // 夜间主题
+    .theme-night & {
+      background: var(--background-dark);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
     
     @include responsive(mobile) {
       padding: 2rem 1rem;
