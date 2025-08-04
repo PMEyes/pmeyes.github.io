@@ -19,8 +19,8 @@ function pwaPlugin() {
         res.statusCode = 200
         res.setHeader('Content-Type', 'application/manifest+json')
         res.end(JSON.stringify({
-          name: "PM Eyes - 项目新探博客",
-          short_name: "PM Eyes",
+          name: "项界新探",
+          short_name: "项界新探",
           description: "聚焦项目管理的目光，探索未来的视野",
           start_url: "/",
           display: "standalone",

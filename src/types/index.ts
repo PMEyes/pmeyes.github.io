@@ -25,11 +25,16 @@ export interface LocaleData {
   [key: string]: string;
 }
 
+export interface LocaleVariables {
+  [key: string]: string | number;
+}
+
 export type Language = 'zh-CN' | 'en-US';
 
 export interface SearchFilters {
   query: string;
   tags: string[];
+  folder?: string;
 }
 
 export interface AppState {

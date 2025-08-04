@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <Link to="/" onClick={closeMobileMenu}>
             <div className="brand-content">
               <img src="/logo.jpg" alt="PM Eyes Logo" className="brand-logo" />
-              <h1>PM Eyes</h1>
+              <h1>{languageService.getText('SITE_TITLE')}</h1>
             </div>
           </Link>
         </div>

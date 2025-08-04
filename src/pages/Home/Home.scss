@@ -49,11 +49,6 @@
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
-      
-      @include responsive(mobile) {
-        flex-direction: column;
-        align-items: center;
-      }
     }
   }
   
@@ -100,7 +95,7 @@
     padding: 4rem 0;
     
     @include responsive(mobile) {
-      padding: 3rem 0;
+      padding: 3rem 1rem;
     }
     
     .tags-cloud {

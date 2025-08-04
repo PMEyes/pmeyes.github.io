@@ -5,6 +5,8 @@ import { zhCN, enUS } from 'date-fns/locale';
 import { ArticleMeta, Language, SearchFilters } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
+import FolderList, { FolderItem } from './FolderTree/FolderList';
+import Modal from '@/components/FolderModal/FolderModal';
 import './Articles.scss';
 
 interface ArticlesProps {
@@ -19,22 +21,15 @@ interface ArticlesProps {
   };
 }
 
-interface FolderNode {
-  name: string;
-  path: string;
-  type: 'folder' | 'file';
-  children?: FolderNode[];
-  article?: ArticleMeta;
-}
-
 const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
   const { language, articles, loading, error, onSearch, onClearSearch, onRetry } = contextValue;
   const [searchParams] = useSearchParams();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
-  const [folderTree, setFolderTree] = useState<FolderNode[]>([]);
+  const [originalFolderTree, setOriginalFolderTree] = useState<any[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<string>('');
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [showMobileFolderModal, setShowMobileFolderModal] = useState<boolean>(false);
+  const [totalArticlesCount, setTotalArticlesCount] = useState<number>(0);
 
   useEffect(() => {
     const loadTags = () => {
@@ -45,29 +40,18 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
   }, []);
 
   useEffect(() => {
+    const loadTotalArticlesCount = async () => {
+      const allArticles = await articleService.getAllArticles();
+      setTotalArticlesCount(allArticles.length);
+    };
+    loadTotalArticlesCount();
+  }, []);
+
+  useEffect(() => {
     const buildFolderTree = () => {
-      // 使用动态生成的文件夹树数据
+      // 使用动态生成的目录树数据
       const dynamicFolderTree = articleService.getFolderTree();
-      setFolderTree(dynamicFolderTree.map(folder => ({
-        name: folder.name,
-        path: folder.path,
-        type: 'folder' as const,
-        children: folder.articles.map(article => ({
-          name: article.title,
-          path: `${folder.path}/${article.slug}`,
-          type: 'file' as const,
-          article: {
-            id: article.id,
-            title: article.title,
-            excerpt: '',
-            publishedAt: article.publishedAt,
-            tags: article.tags,
-            slug: article.slug,
-            readingTime: article.readingTime,
-            folder: folder.path
-          }
-        }))
-      })));
+      setOriginalFolderTree(dynamicFolderTree);
     };
     
     buildFolderTree();
@@ -75,11 +59,31 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
 
   useEffect(() => {
     const tagParam = searchParams.get('tag');
+    const folderParam = searchParams.get('folder');
+    
+    // 处理标签参数
     if (tagParam) {
       setSelectedTags([tagParam]);
       onSearch({ query: '', tags: [tagParam] });
     }
-  }, [searchParams, onSearch]);
+    
+    // 处理目录参数
+    if (folderParam && folderParam !== selectedFolder) {
+      setSelectedFolder(folderParam);
+      handleFolderClick(folderParam, false); // 不更新标签，避免重复
+    } else if (!folderParam && !selectedFolder) {
+      // 只有在没有选中目录时才设置为空
+      setSelectedFolder('');
+    }
+  }, [searchParams, onSearch, selectedFolder]);
+
+  // 当组件挂载时，如果有选中的目录，确保筛选状态正确
+  useEffect(() => {
+    if (selectedFolder && articles.length === 0) {
+      // 如果有选中的目录但没有文章，重新应用筛选
+      handleFolderClick(selectedFolder, false);
+    }
+  }, [selectedFolder, articles.length]);
 
   const getLocaleDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -100,77 +104,49 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
 
   const handleClearFilters = () => {
     setSelectedTags([]);
-    setSelectedFolder('');
-    onClearSearch();
-  };
-
-  const handleFolderClick = (folderPath: string) => {
-    setSelectedFolder(folderPath);
-    // 根据文件夹筛选文章
-    if (folderPath) {
-      // const folderName = folderPath.split('/').pop() || folderPath;
-            // const filteredArticles = articles.filter(article =>
-      //   article.folder === folderPath || article.folder?.includes(folderName)
-      // );
-      // 这里可以调用父组件的筛选方法
-      // 暂时直接使用本地筛选
-    }
-  };
-
-  const toggleFolderExpansion = (folderPath: string) => {
-    const newExpanded = new Set(expandedFolders);
-    if (newExpanded.has(folderPath)) {
-      newExpanded.delete(folderPath);
+    // 不清除目录选择，只清除标签筛选
+    // 根据当前选中的目录重新搜索
+    if (selectedFolder) {
+      onSearch({ query: '', tags: [], folder: selectedFolder });
     } else {
-      newExpanded.add(folderPath);
+      onClearSearch();
     }
-    setExpandedFolders(newExpanded);
   };
 
-  const renderFolderTree = (nodes: FolderNode[], level = 0) => {
-    return nodes.map((node) => (
-      <div key={node.path} className="folder-tree-item" style={{ paddingLeft: `${level * 20}px` }}>
-        {node.type === 'folder' ? (
-          <div className="folder-item">
-            <div 
-              className="folder-header"
-              onClick={() => toggleFolderExpansion(node.path)}
-            >
-              <span className={`folder-icon ${expandedFolders.has(node.path) ? 'expanded' : ''}`}>
-                ▶
-              </span>
-              <span className="folder-name">{node.name}</span>
-              <span className="folder-count">({node.children?.length || 0})</span>
-            </div>
-            {expandedFolders.has(node.path) && node.children && (
-              <div className="folder-children">
-                {renderFolderTree(node.children, level + 1)}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="file-item">
-            <Link 
-              to={`/article/${node.article?.slug}`}
-              className={`file-link ${selectedFolder === node.path ? 'active' : ''}`}
-              onClick={() => handleFolderClick(node.path)}
-            >
-              {node.name}
-            </Link>
-          </div>
-        )}
-      </div>
-    ));
+  const handleFolderClick = (folderPath: string, updateTags: boolean = true) => {
+    setSelectedFolder(folderPath);
+    // 根据目录筛选文章
+    if (folderPath) {
+      // 从原始数据中获取该目录下文章的所有标签
+      if (updateTags) {
+        const allArticles = articleService.getAllArticles();
+        allArticles.then(articles => {
+          const folderArticles = articles.filter(article => article.folder === folderPath);
+          const folderTags = new Set<string>();
+          folderArticles.forEach(article => {
+            article.tags.forEach(tag => folderTags.add(tag));
+          });
+          
+          // 更新标签列表为目录下的实际标签
+          setAllTags(Array.from(folderTags).sort());
+        });
+      }
+      
+      onSearch({ query: '', tags: [], folder: folderPath });
+    } else {
+      // 如果清空目录选择，显示所有文章和所有标签
+      if (updateTags) {
+        const allTags = articleService.getAllTags();
+        setAllTags(allTags);
+      }
+      onClearSearch();
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="loading">
-        <div className="spinner"></div>
-        <p>{languageService.getText('LOADING')}</p>
-      </div>
-    );
-  }
+  const handleFolderClickWithClear = (folderPath: string) => {
+    handleFolderClick(folderPath);
+    setSelectedTags([]); // 清空已选标签
+  };
 
   if (error) {
     return (
@@ -187,103 +163,139 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
   return (
     <div className="articles-page">
       <div className="articles-layout">
-        {/* 左侧文件夹树导航 */}
+        {/* 左侧目录树导航 */}
         <div className="articles-sidebar">
           <div className="sidebar-header">
             <h3>{languageService.getText('FOLDERS')}</h3>
           </div>
           <div className="folder-tree">
-            {renderFolderTree(folderTree)}
+            <FolderList
+              folders={originalFolderTree}
+              selectedFolder={selectedFolder}
+              onFolderClick={handleFolderClick}
+              showAllArticles={true}
+              totalArticles={totalArticlesCount}
+              variant="sidebar"
+            />
           </div>
         </div>
 
         {/* 右侧文章列表 */}
         <div className="articles-main">
           <div className="articles-header">
-            <h1>{languageService.getText('ARTICLES')}</h1>
-            <p>
-              {language === 'zh-CN' 
-                ? '探索项目管理的深度见解和实践经验'
-                : 'Explore deep insights and practical experiences in project management'
-              }
-            </p>
-          </div>
-
-          <div className="articles-filters">
-            <div className="filter-section">
-              <h3>{languageService.getText('TAGS')}</h3>
-              <div className="filter-tags">
-                {allTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`filter-tag ${selectedTags.includes(tag) ? 'active' : ''}`}
-                    onClick={() => handleTagClick(tag)}
-                  >
-                    {tag}
-                  </span>
-                ))}
+            {/* 移动端目录选择器 */}
+            <div className="mobile-folder-selector">
+              <button 
+                className="folder-selector-btn"
+                onClick={() => setShowMobileFolderModal(true)}
+              >
+                <span className="folder-selector-text">
+                  {selectedFolder ? selectedFolder : '全部文章'}
+                </span>
+                <span className="folder-selector-icon">
+                  ▼
+                </span>
+              </button>
+            </div>
+            
+            <div className="header-filters">
+              <div className="filter-section">
+                <div className="filter-header">
+                  <h3>{languageService.getText('TAGS')}</h3>
+                  <div className="filter-tags">
+                    {allTags.map((tag) => (
+                      <span
+                        key={tag}
+                        className={`filter-tag ${selectedTags.includes(tag) ? 'active' : ''}`}
+                        onClick={() => handleTagClick(tag)}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                    {selectedTags.length > 0 && (
+                      <span
+                        className="filter-tag clear-tag"
+                        onClick={handleClearFilters}
+                      >
+                        {languageService.getText('CLEAR_SEARCH')}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
-              {selectedTags.length > 0 && (
-                <button className="button button-secondary mt-2" onClick={handleClearFilters}>
-                  {languageService.getText('CLEAR_SEARCH')}
-                </button>
-              )}
             </div>
           </div>
 
           <div className="articles-content">
-            <div className="articles-stats">
-              {language === 'zh-CN' 
-                ? `找到 ${articles.length} 篇文章`
-                : `Found ${articles.length} articles`
-              }
-            </div>
-
-            {articles.length === 0 ? (
-              <div className="no-articles">
-                <h3>{languageService.getText('NO_ARTICLES_FOUND')}</h3>
-                <p>
-                  {language === 'zh-CN'
-                    ? '没有找到符合条件的文章，请尝试调整搜索条件。'
-                    : 'No articles found matching your criteria. Please try adjusting your search filters.'
-                  }
-                </p>
-                <button className="button" onClick={handleClearFilters}>
-                  {languageService.getText('CLEAR_SEARCH')}
-                </button>
+            {loading ? (
+              <div className="articles-loading">
+                <div className="spinner"></div>
+                <p>{languageService.getText('LOADING')}</p>
               </div>
             ) : (
-              <div className="article-list">
-                {articles.map((article) => (
-                  <article key={article.id} className="article-item">
-                    <div className="article-meta">
-                      <time dateTime={article.publishedAt}>
-                        {getLocaleDate(article.publishedAt)}
-                      </time>
-                      <span className="reading-time">
-                        {article.readingTime} {language === 'zh-CN' ? '分钟' : 'min read'}
-                      </span>
-                    </div>
-                    <h2 className="article-title">
-                      <Link to={`/article/${article.slug}`}>
-                        {article.title}
-                      </Link>
-                    </h2>
-                    <p className="article-excerpt">{article.excerpt}</p>
-                    <div className="article-tags">
-                      {article.tags.map((tag) => (
-                        <span key={tag} className="tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
+              <>
+                <div className="articles-stats">
+                  {languageService.getText('SEARCH_RESULTS_COUNT', { count: articles.length })}
+                </div>
+
+                {articles.length === 0 ? (
+                  <div className="no-articles">
+                    <h3>{languageService.getText('NO_ARTICLES_FOUND')}</h3>
+                    <button className="button" onClick={handleClearFilters}>
+                      {languageService.getText('CLEAR_SEARCH')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="article-list">
+                    {articles.map((article) => (
+                      <article key={article.id} className="article-item">
+                        <div className="article-meta">
+                          <time dateTime={article.publishedAt}>
+                            {getLocaleDate(article.publishedAt)}
+                          </time>
+                          <span className="reading-time">
+                            {languageService.getText('ARTICLE_READ_TIME', { minutes: article.readingTime })}
+                          </span>
+                        </div>
+                        <h2 className="article-title">
+                          <Link to={`/article/${article.slug}`}>
+                            {article.title}
+                          </Link>
+                        </h2>
+                        <p className="article-excerpt">{article.excerpt}</p>
+                        <div className="article-tags">
+                          {article.tags.map((tag) => (
+                            <span key={tag} className="tag">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
       </div>
+      
+      {/* 移动端目录模态框 */}
+      <Modal
+        isOpen={showMobileFolderModal}
+        onClose={() => setShowMobileFolderModal(false)}
+        title={languageService.getText('FOLDERS')}
+      >
+        <FolderList
+          folders={originalFolderTree}
+          selectedFolder={selectedFolder}
+          onFolderClick={handleFolderClickWithClear}
+          showAllArticles={true}
+          totalArticles={totalArticlesCount}
+          variant="modal"
+          onClose={() => setShowMobileFolderModal(false)}
+        />
+      </Modal>
     </div>
   );
 };

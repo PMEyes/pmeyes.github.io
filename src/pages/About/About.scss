@@ -1,6 +1,9 @@
 @use '../../styles/global' as *;
 
 .about-page {
+  @include responsive(mobile) {
+    padding: 0 1rem;
+  }
   .about-header {
     text-align: center;
     margin-bottom: 4rem;
@@ -31,11 +34,11 @@
     box-shadow: $shadow-sm;
     
     @include responsive(mobile) {
-      padding: 2rem 1.5rem;
+      padding: 2rem 1rem;
     }
     
     .about-section {
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       
       &:last-child {
         margin-bottom: 0;
@@ -58,6 +61,29 @@
         color: $text-secondary;
         line-height: 1.8;
         margin-bottom: 1rem;
+        list-style: none; // 移除默认的列表样式
+        
+        li {
+          margin-bottom: 0.5rem;
+          position: relative;
+          padding-left: 1rem; // 为列表项添加左内边距
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          // 自定义列表项标记
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.7rem;
+            width: 6px;
+            height: 6px;
+            background-color: $text-secondary;
+            border-radius: 50%;
+          }
+        }
       }
     }
   }

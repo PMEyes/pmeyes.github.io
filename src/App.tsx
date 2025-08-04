@@ -25,6 +25,12 @@ function App() {
     loadArticles();
   }, []);
 
+  // 监听语言变化，更新页面标题
+  useEffect(() => {
+    const siteTitle = languageService.getText('SITE_TITLE');
+    document.title = siteTitle;
+  }, [language]);
+
   const loadArticles = async () => {
     try {
       setLoading(true);
@@ -59,7 +65,12 @@ function App() {
 
   const handleClearSearch = () => {
     setSearchFilters({ query: '', tags: [] });
-    loadArticles();
+    // 保持当前的目录筛选
+    if (searchFilters.folder) {
+      handleSearch({ query: '', tags: [], folder: searchFilters.folder });
+    } else {
+      loadArticles();
+    }
   };
 
   const contextValue = {

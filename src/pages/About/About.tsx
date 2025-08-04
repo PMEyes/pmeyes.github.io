@@ -18,112 +18,97 @@ const About: React.FC<AboutProps> = ({ contextValue }) => {
         <div className="about-header">
           <h1>{languageService.getText('ABOUT')}</h1>
           <p>
-            {language === 'zh-CN'
-              ? '了解PM Eyes博客的使命和愿景'
-              : 'Learn about the mission and vision of PM Eyes blog'
-            }
+            {languageService.getText('ABOUT_US_DESCRIPTION')}
           </p>
         </div>
 
         <div className="about-content">
           <div className="about-section">
             <h2>
-              {language === 'zh-CN' ? '关于我们' : 'About Us'}
+              {languageService.getText('ABOUT_US')}
             </h2>
             <p>
-              {language === 'zh-CN'
-                ? 'PM Eyes是一个专注于项目管理的专业博客平台。我们致力于分享项目管理的最佳实践、工具、方法和经验，帮助项目管理者提升技能，实现项目成功。'
-                : 'PM Eyes is a professional blog platform focused on project management. We are committed to sharing best practices, tools, methods, and experiences in project management to help project managers improve their skills and achieve project success.'
-              }
+              {languageService.getText('ABOUT_US_DESCRIPTION')}
             </p>
           </div>
 
           <div className="about-section">
             <h2>
-              {language === 'zh-CN' ? '我们的使命' : 'Our Mission'}
+              {languageService.getText('OUR_MISSION')}
             </h2>
             <p>
-              {language === 'zh-CN'
-                ? '通过深入浅出的文章和实用的案例分析，为项目管理者提供有价值的知识和见解，推动项目管理行业的专业发展。'
-                : 'Through accessible articles and practical case studies, we provide valuable knowledge and insights for project managers, promoting the professional development of the project management industry.'
-              }
+              {languageService.getText('OUR_MISSION_DESCRIPTION')}
             </p>
           </div>
 
           <div className="about-section">
             <h2>
-              {language === 'zh-CN' ? '核心价值' : 'Core Values'}
+              {languageService.getText('CORE_VALUES')}
             </h2>
             <ul>
               <li>
-                {language === 'zh-CN' ? '专业性：提供高质量、专业的内容' : 'Professionalism: Provide high-quality, professional content'}
+                {languageService.getText('PROFESSIONALISM')}
               </li>
               <li>
-                {language === 'zh-CN' ? '实用性：注重实际应用和可操作性' : 'Practicality: Focus on practical application and operability'}
+                {languageService.getText('PRACTICALITY')}
               </li>
               <li>
-                {language === 'zh-CN' ? '创新性：探索项目管理的新方法和趋势' : 'Innovation: Explore new methods and trends in project management'}
+                {languageService.getText('INNOVATION')}
               </li>
               <li>
-                {language === 'zh-CN' ? '社区性：建立项目管理者交流的平台' : 'Community: Build a platform for project managers to communicate'}
+                {languageService.getText('COMMUNITY')}
               </li>
             </ul>
           </div>
 
           <div className="about-section">
             <h2>
-              {language === 'zh-CN' ? '内容主题' : 'Content Topics'}
+              {languageService.getText('CONTENT_TOPICS')}
             </h2>
             <p>
-              {language === 'zh-CN'
-                ? '我们的文章涵盖以下主题：'
-                : 'Our articles cover the following topics:'
-              }
+              {languageService.getText('CONTENT_TOPICS_DESCRIPTION')}
             </p>
             <ul>
               <li>
-                {language === 'zh-CN' ? '敏捷项目管理' : 'Agile Project Management'}
+                {languageService.getText('AGILE_PROJECT_MANAGEMENT')}
               </li>
               <li>
-                {language === 'zh-CN' ? '传统项目管理方法' : 'Traditional Project Management Methods'}
+                {languageService.getText('TRADITIONAL_PROJECT_MANAGEMENT')}
               </li>
               <li>
-                {language === 'zh-CN' ? '团队协作与沟通' : 'Team Collaboration and Communication'}
+                {languageService.getText('TEAM_COLLABORATION')}
               </li>
               <li>
-                {language === 'zh-CN' ? '风险管理' : 'Risk Management'}
+                {languageService.getText('RISK_MANAGEMENT')}
               </li>
               <li>
-                {language === 'zh-CN' ? '质量管理' : 'Quality Management'}
+                {languageService.getText('QUALITY_MANAGEMENT')}
               </li>
               <li>
-                {language === 'zh-CN' ? '项目管理工具和技术' : 'Project Management Tools and Technologies'}
+                {languageService.getText('PROJECT_MANAGEMENT_TOOLS')}
               </li>
               <li>
-                {language === 'zh-CN' ? '数字化转型中的项目管理' : 'Project Management in Digital Transformation'}
+                {languageService.getText('DIGITAL_TRANSFORMATION')}
               </li>
             </ul>
           </div>
 
           <div className="about-section">
             <h2>
-              {language === 'zh-CN' ? '联系我们' : 'Contact Us'}
+              {languageService.getText('CONTACT_US')}
             </h2>
             <p>
-              {language === 'zh-CN'
-                ? '如果您有任何问题、建议或合作意向，欢迎通过以下方式联系我们：'
-                : 'If you have any questions, suggestions, or collaboration intentions, please feel free to contact us through the following ways:'
-              }
+              {languageService.getText('CONTACT_US_DESCRIPTION')}
             </p>
             <ul>
               <li>
-                {language === 'zh-CN' ? '邮箱：hjm100@126.com' : 'Email: hjm100@126.com'}
+                {languageService.getText('EMAIL')}
               </li>
               <li>
-                {language === 'zh-CN' ? '微信公众号：项界新探' : 'WeChat Official Account: PM Eyes'}
+                {languageService.getText('WECHAT_OFFICIAL_ACCOUNT')}
               </li>
               <li>
-                {language === 'zh-CN' ? 'LinkedIn：PM Eyes Blog' : 'LinkedIn: PM Eyes Blog'}
+                {languageService.getText('LINKEDIN')}
               </li>
             </ul>
           </div>

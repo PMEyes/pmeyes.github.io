@@ -98,7 +98,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
               {getLocaleDate(article.publishedAt)}
             </time>
             <span className="reading-time">
-              {article.readingTime} {language === 'zh-CN' ? '分钟' : 'min read'}
+              {languageService.getText('ARTICLE_READ_TIME', { minutes: article.readingTime })}
             </span>
           </div>
           <div className="article-tags">
@@ -146,7 +146,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
                       {getLocaleDate(relatedArticle.publishedAt)}
                     </time>
                     <span className="reading-time">
-                      {relatedArticle.readingTime} {language === 'zh-CN' ? '分钟' : 'min read'}
+                      {languageService.getText('ARTICLE_READ_TIME', { minutes: relatedArticle.readingTime })}
                     </span>
                   </div>
                   <h3 className="article-title">

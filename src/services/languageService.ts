@@ -1,4 +1,4 @@
-import { Language, LocaleData } from '@/types';
+import { Language, LocaleData, LocaleVariables } from '@/types';
 import { DEFAULT_LANGUAGE, STORAGE_KEYS } from '@/constants';
 import zhCN from '@/locales/zh-CN.json';
 import enUS from '@/locales/en-US.json';
@@ -48,9 +48,33 @@ class LanguageService {
     }
   }
 
-  getText(key: string): string {
+  /**
+   * 获取文本，支持变量替换
+   * @param key 语言键
+   * @param variables 可选的变量对象
+   * @returns 替换变量后的文本
+   */
+  getText(key: string, variables?: LocaleVariables): string {
     const locale = locales[this.currentLanguage];
-    return locale[key] || key;
+    let text = locale[key] || key;
+    
+    if (variables) {
+      text = this.replaceVariables(text, variables);
+    }
+    
+    return text;
+  }
+
+  /**
+   * 替换文本中的变量
+   * @param text 包含变量的文本
+   * @param variables 变量对象
+   * @returns 替换后的文本
+   */
+  private replaceVariables(text: string, variables: LocaleVariables): string {
+    return text.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
+      return variables[variableName]?.toString() || match;
+    });
   }
 
   getLocaleData(): LocaleData {

@@ -92,7 +92,7 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
       <section className="latest-articles">
         <div className="container">
           <h2 className="section-title">
-            {language === 'zh-CN' ? '最新文章' : 'Latest Articles'}
+            {languageService.getText('LATEST_ARTICLES')}
           </h2>
           <div className="article-grid">
             {latestArticles.map((article) => (
@@ -102,7 +102,7 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
                     {getLocaleDate(article.publishedAt)}
                   </time>
                   <span className="reading-time">
-                    {article.readingTime} {language === 'zh-CN' ? '分钟' : 'min read'}
+                    {languageService.getText('ARTICLE_READ_TIME', { minutes: article.readingTime })}
                   </span>
                 </div>
                 <h3 className="article-title">
@@ -130,7 +130,7 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
           {articles.length > 6 && (
             <div className="view-all-container">
               <Link to="/articles" className="button">
-                {language === 'zh-CN' ? '查看所有文章' : 'View All Articles'}
+                {languageService.getText('VIEW_ALL_ARTICLES')}
               </Link>
             </div>
           )}

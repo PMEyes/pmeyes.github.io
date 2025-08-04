@@ -80,7 +80,7 @@ $breakpoint-desktop: 1200px;
   background: white;
   border-radius: $border-radius-lg;
   box-shadow: $shadow-sm;
-  padding: 1.5rem;
+  padding: 1.25rem;
   transition: box-shadow $transition-normal;
 }
 
@@ -89,6 +89,12 @@ $breakpoint-desktop: 1200px;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+// 基础列表样式重置
+ul, ol {
+  list-style: none;
+  padding-left: 0;
 }
 
 html {
@@ -112,7 +118,7 @@ body {
   padding: 0 2rem;
   
   @include responsive(mobile) {
-    padding: 0 1rem;
+    padding: 0;
   }
 }
 
@@ -143,6 +149,12 @@ body {
     &:hover {
       background: color.adjust($secondary-color, $lightness: -10%);
     }
+  }
+  
+  @include responsive(mobile) {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: $border-radius-sm;
   }
 }
 
@@ -216,7 +228,7 @@ body {
   }
   
   @include responsive(mobile) {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 }

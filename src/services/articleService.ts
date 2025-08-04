@@ -53,6 +53,11 @@ class ArticleService {
       );
     }
 
+    // 按目录过滤
+    if (filters.folder) {
+      results = results.filter(article => article.folder === filters.folder);
+    }
+
     // 转换为ArticleMeta格式
     const articleMetas = results.map(article => ({
       id: article.id,

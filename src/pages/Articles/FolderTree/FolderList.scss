@@ -1,0 +1,99 @@
+@use '../../../styles/global' as *;
+
+.folder-list {
+  // 基础样式
+  .folder-item {
+    margin-bottom: 0.5rem;
+    
+    .folder-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: $text-primary;
+      padding: 0.75rem 1rem;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      border-radius: $border-radius;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      
+      &:hover {
+        background: rgba($primary-color, 0.05);
+        color: $primary-color;
+      }
+      
+      &.selected {
+        color: $primary-color;
+        font-weight: 600;
+      }
+      
+      .folder-name {
+        font-weight: 500;
+        flex: 1;
+        text-align: left;
+        
+        &.selected {
+          font-weight: 600;
+          color: $primary-color;
+        }
+      }
+      
+      .folder-count {
+        font-size: 0.8rem;
+        color: $text-secondary;
+        background: rgba($primary-color, 0.1);
+        padding: 0.2rem 0.5rem;
+        border-radius: $border-radius-sm;
+        margin-left: 0.5rem;
+        min-width: 2rem;
+        text-align: center;
+        
+        &.selected {
+          color: $primary-color;
+          background: rgba($primary-color, 0.2);
+        }
+      }
+    }
+  }
+  
+  // PC端侧边栏样式
+  &.folder-list--sidebar {
+    padding: 0.5rem 0;
+    
+    .folder-item {
+      margin-bottom: 0.25rem;
+      
+      .folder-link {
+        padding: 0.5rem 0.75rem;
+        border-radius: $border-radius-sm;
+        
+        &:hover {
+          background: rgba($primary-color, 0.08);
+        }
+      }
+    }
+  }
+  
+  // 移动端模态框样式
+  &.folder-list--modal {
+    padding: 1rem 0;
+    
+    .folder-item {
+      margin-bottom: 0.5rem;
+      
+      .folder-link {
+        padding: 1rem;
+        border-radius: $border-radius;
+        font-size: 1rem;
+        
+        &:hover {
+          background: rgba($primary-color, 0.08);
+        }
+      }
+    }
+  }
+} 
