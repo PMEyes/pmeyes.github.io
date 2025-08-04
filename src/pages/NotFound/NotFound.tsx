@@ -9,9 +9,7 @@ interface NotFoundProps {
   };
 }
 
-const NotFound: React.FC<NotFoundProps> = ({ contextValue }) => {
-  const { language } = contextValue;
-
+const NotFound: React.FC<NotFoundProps> = () => {
   return (
     <div className="not-found-page">
       <div className="container">

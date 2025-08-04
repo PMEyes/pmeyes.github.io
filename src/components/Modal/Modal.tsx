@@ -1,5 +1,5 @@
 import React from 'react';
-import './FolderModal.scss';
+import './Modal.scss';
 
 interface ModalProps {
   isOpen: boolean;

@@ -1,6 +1,4 @@
 import React from 'react';
-import { Language } from '@/types';
-import { languageService } from '@/services/languageService';
 import './FolderList.scss';
 
 export interface FolderItem {

@@ -5,8 +5,8 @@ import { zhCN, enUS } from 'date-fns/locale';
 import { ArticleMeta, Language, SearchFilters } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
-import FolderList, { FolderItem } from './FolderTree/FolderList';
-import Modal from '@/components/FolderModal/FolderModal';
+import FolderList from './FolderTree/FolderList';
+import Modal from '@/components/Modal/Modal';
 import './Articles.scss';
 
 interface ArticlesProps {

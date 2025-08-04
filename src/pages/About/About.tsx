@@ -9,9 +9,7 @@ interface AboutProps {
   };
 }
 
-const About: React.FC<AboutProps> = ({ contextValue }) => {
-  const { language } = contextValue;
-
+const About: React.FC<AboutProps> = () => {
   return (
     <div className="about-page">
       <div className="container">
