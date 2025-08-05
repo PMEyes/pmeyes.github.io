@@ -2,9 +2,6 @@
 # 所有不存在的路由都重定向到index.html
 /*    /index.html   200
 
-# 处理文章文件请求
-/articles/*    /articles/:splat    200
-
 # 处理语言文件请求
 /locales/*    /locales/:splat    200
 
