@@ -158,7 +158,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
                     </span>
                   </div>
                   <h3 className="article-title">
-                    <Link to={`/article/${relatedArticle.slug}`}>
+                    <Link to={`/blog/${relatedArticle.slug}`}>
                       {relatedArticle.title}
                     </Link>
                   </h3>

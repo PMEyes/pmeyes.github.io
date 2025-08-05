@@ -25,7 +25,7 @@ const NotFound: React.FC<NotFoundProps> = () => {
             <Link to="/" className="button">
               {languageService.getText('BACK_TO_HOME')}
             </Link>
-            <Link to="/articles" className="button button-outline">
+            <Link to="/blogs" className="button button-outline">
               {languageService.getText('BROWSE_ARTICLES')}
             </Link>
           </div>

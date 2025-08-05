@@ -84,8 +84,8 @@ const Navbar: React.FC<NavbarProps> = ({
             {languageService.getText('HOME')}
           </Link>
           <Link 
-            to="/articles" 
-            className={`nav-link ${isActive('/articles') ? 'active' : ''}`}
+            to="/blogs" 
+            className={`nav-link ${isActive('/blogs') ? 'active' : ''}`}
           >
             {languageService.getText('ARTICLES')}
           </Link>
@@ -151,8 +151,8 @@ const Navbar: React.FC<NavbarProps> = ({
               {languageService.getText('HOME')}
             </Link>
             <Link 
-              to="/articles" 
-              className={`mobile-nav-link ${isActive('/articles') ? 'active' : ''}`}
+              to="/blogs" 
+              className={`mobile-nav-link ${isActive('/blogs') ? 'active' : ''}`}
               onClick={closeMobileMenu}
             >
               {languageService.getText('ARTICLES')}

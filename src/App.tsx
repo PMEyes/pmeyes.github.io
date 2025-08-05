@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Language, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
 import { themeService } from '@/services/themeService';
@@ -111,8 +111,8 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home contextValue={contextValue} />} />
-            <Route path="/articles" element={<Articles contextValue={contextValue} />} />
-            <Route path="/article/:slug" element={<ArticleDetail contextValue={contextValue} />} />
+            <Route path="/blogs" element={<Articles contextValue={contextValue} />} />
+            <Route path="/blog/:slug" element={<ArticleDetail contextValue={contextValue} />} />
             <Route path="/about" element={<About contextValue={contextValue} />} />
             <Route path="/themes" element={<ThemePreview currentTheme={theme} onThemeChange={handleThemeChange} />} />
             <Route path="*" element={<NotFound contextValue={contextValue} />} />

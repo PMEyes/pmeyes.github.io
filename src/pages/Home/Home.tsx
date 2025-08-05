@@ -79,7 +79,7 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
             {languageService.getText('SITE_DESCRIPTION')}
           </p>
           <div className="hero-actions">
-            <Link to="/articles" className="button">
+            <Link to="/blogs" className="button">
               {languageService.getText('ARTICLES')}
             </Link>
             <Link to="/about" className="button button-outline">
@@ -107,7 +107,7 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
                   </span>
                 </div>
                 <h3 className="article-title">
-                  <Link to={`/article/${article.slug}`}>
+                  <Link to={`/blog/${article.slug}`}>
                     {article.title}
                   </Link>
                 </h3>
@@ -123,7 +123,7 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
             ))}
           </div>
           <div className="view-all-container">
-            <Link to="/articles" className="button button-outline">
+            <Link to="/blogs" className="button button-outline">
               {languageService.getText('VIEW_ALL_ARTICLES')}
             </Link>
           </div>
