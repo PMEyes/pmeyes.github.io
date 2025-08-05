@@ -114,7 +114,7 @@ function App() {
             <Route path="/articles" element={<Articles contextValue={contextValue} />} />
             <Route path="/article/:slug" element={<ArticleDetail contextValue={contextValue} />} />
             <Route path="/about" element={<About contextValue={contextValue} />} />
-            <Route path="/themes" element={<ThemePreview currentTheme={theme} language={language} onThemeChange={handleThemeChange} />} />
+            <Route path="/themes" element={<ThemePreview currentTheme={theme} onThemeChange={handleThemeChange} />} />
             <Route path="*" element={<NotFound contextValue={contextValue} />} />
           </Routes>
         </main>

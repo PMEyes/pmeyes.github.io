@@ -53,9 +53,20 @@ class ArticleService {
       );
     }
 
-    // 按目录过滤
+    // 按目录过滤（支持包含子文件夹）
     if (filters.folder) {
-      results = results.filter(article => article.folder === filters.folder);
+      results = results.filter(article => {
+        const articleFolder = article.folder || '';
+        // 精确匹配文件夹
+        if (articleFolder === filters.folder) {
+          return true;
+        }
+        // 检查是否是子文件夹
+        if (articleFolder.startsWith(filters.folder + '/')) {
+          return true;
+        }
+        return false;
+      });
     }
 
     // 转换为ArticleMeta格式

@@ -1,16 +1,15 @@
 import React from 'react';
-import { Theme, Language } from '@/types';
+import { Theme } from '@/types';
 import { themeService } from '@/services/themeService';
 import { languageService } from '@/services/languageService';
 import './ThemePreview.scss';
 
 interface ThemePreviewProps {
   currentTheme: Theme;
-  language: Language;
   onThemeChange: (theme: Theme) => void;
 }
 
-const ThemePreview: React.FC<ThemePreviewProps> = ({ currentTheme, language, onThemeChange }) => {
+const ThemePreview: React.FC<ThemePreviewProps> = ({ currentTheme, onThemeChange }) => {
   const themeList = themeService.getLocalizedThemeList();
 
   return (
