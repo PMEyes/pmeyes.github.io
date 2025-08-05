@@ -1,6 +1,87 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+import fs from 'fs'
+import path from 'path'
+
+// 复制文章文件夹的插件
+function copyArticlesPlugin() {
+  return {
+    name: 'copy-articles',
+    writeBundle() {
+      // 复制文章文件夹
+      const sourceDir = path.resolve(__dirname, 'articles')
+      const targetDir = path.resolve(__dirname, 'dist/articles')
+      
+      // 确保目标目录存在
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true })
+      }
+      
+      // 复制文件夹
+      function copyDir(src: string, dest: string) {
+        if (!fs.existsSync(dest)) {
+          fs.mkdirSync(dest, { recursive: true })
+        }
+        
+        const items = fs.readdirSync(src)
+        for (const item of items) {
+          const srcPath = path.join(src, item)
+          const destPath = path.join(dest, item)
+          const stat = fs.statSync(srcPath)
+          
+          if (stat.isDirectory()) {
+            copyDir(srcPath, destPath)
+          } else {
+            fs.copyFileSync(srcPath, destPath)
+          }
+        }
+      }
+      
+      if (fs.existsSync(sourceDir)) {
+        copyDir(sourceDir, targetDir)
+        console.log('✅ 文章文件夹已复制到 dist/articles')
+      }
+      
+      // 复制文章元数据文件
+      const articlesJsonSource = path.resolve(__dirname, 'src/data/articles.json')
+      const articlesJsonTarget = path.resolve(__dirname, 'dist/data/articles.json')
+      
+      if (fs.existsSync(articlesJsonSource)) {
+        // 确保目标目录存在
+        const targetDir = path.dirname(articlesJsonTarget)
+        if (!fs.existsSync(targetDir)) {
+          fs.mkdirSync(targetDir, { recursive: true })
+        }
+        
+        fs.copyFileSync(articlesJsonSource, articlesJsonTarget)
+        console.log('✅ 文章元数据文件已复制到 dist/data/articles.json')
+      }
+      
+      // 复制语言文件
+      const localesSource = path.resolve(__dirname, 'src/locales')
+      const localesTarget = path.resolve(__dirname, 'dist/locales')
+      
+      if (fs.existsSync(localesSource)) {
+        // 确保目标目录存在
+        if (!fs.existsSync(localesTarget)) {
+          fs.mkdirSync(localesTarget, { recursive: true })
+        }
+        
+        // 复制所有语言文件
+        const localeFiles = fs.readdirSync(localesSource)
+        for (const file of localeFiles) {
+          if (file.endsWith('.json')) {
+            const sourceFile = path.join(localesSource, file)
+            const targetFile = path.join(localesTarget, file)
+            fs.copyFileSync(sourceFile, targetFile)
+          }
+        }
+        console.log('✅ 语言文件已复制到 dist/locales/')
+      }
+    }
+  }
+}
 
 // 自定义插件处理PWA相关请求
 function pwaPlugin() {
@@ -28,13 +109,81 @@ function pwaPlugin() {
           theme_color: "#007bff"
         }))
       })
+      
+      // 处理文章元数据请求
+      server.middlewares.use('/data/articles.json', (req, res) => {
+        try {
+          const articlesPath = path.resolve(__dirname, 'src/data/articles.json')
+          if (fs.existsSync(articlesPath)) {
+            const content = fs.readFileSync(articlesPath, 'utf-8')
+            res.statusCode = 200
+            res.setHeader('Content-Type', 'application/json')
+            res.end(content)
+          } else {
+            res.statusCode = 404
+            res.end('Articles data not found')
+          }
+        } catch (error) {
+          res.statusCode = 500
+          res.end('Error loading articles data')
+        }
+      })
+      
+      // 处理语言文件请求
+      server.middlewares.use('/locales/:locale.json', (req, res) => {
+        try {
+          const locale = req.params.locale
+          const localePath = path.resolve(__dirname, `src/locales/${locale}.json`)
+          if (fs.existsSync(localePath)) {
+            const content = fs.readFileSync(localePath, 'utf-8')
+            res.statusCode = 200
+            res.setHeader('Content-Type', 'application/json')
+            res.end(content)
+          } else {
+            res.statusCode = 404
+            res.end('Locale file not found')
+          }
+        } catch (error) {
+          res.statusCode = 500
+          res.end('Error loading locale file')
+        }
+      })
+      
+      // 处理文章文件请求
+      server.middlewares.use('/articles/:path(*)', (req, res) => {
+        try {
+          const articlePath = req.params.path
+          const fullPath = path.resolve(__dirname, `articles/${articlePath}`)
+          
+          // 安全检查：确保路径在 articles 目录内
+          const articlesDir = path.resolve(__dirname, 'articles')
+          if (!fullPath.startsWith(articlesDir)) {
+            res.statusCode = 403
+            res.end('Access denied')
+            return
+          }
+          
+          if (fs.existsSync(fullPath)) {
+            const content = fs.readFileSync(fullPath, 'utf-8')
+            res.statusCode = 200
+            res.setHeader('Content-Type', 'text/markdown; charset=utf-8')
+            res.end(content)
+          } else {
+            res.statusCode = 404
+            res.end('Article file not found')
+          }
+        } catch (error) {
+          res.statusCode = 500
+          res.end('Error loading article file')
+        }
+      })
     }
   }
 }
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), pwaPlugin()],
+  plugins: [react(), pwaPlugin(), copyArticlesPlugin()],
   resolve: {
     alias: {
       '@': resolve('./src'),

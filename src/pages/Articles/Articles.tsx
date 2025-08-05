@@ -121,7 +121,17 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
       if (updateTags) {
         const allArticles = articleService.getAllArticles();
         allArticles.then(articles => {
-          const folderArticles = articles.filter(article => article.folder === folderPath);
+          const folderArticles = articles.filter(article => {
+            // 精确匹配文件夹
+            if (article.folder === folderPath) {
+              return true;
+            }
+            // 检查是否是子文件夹
+            if (article.folder && article.folder.startsWith(folderPath + '/')) {
+              return true;
+            }
+            return false;
+          });
           const folderTags = new Set<string>();
           folderArticles.forEach(article => {
             article.tags.forEach(tag => folderTags.add(tag));

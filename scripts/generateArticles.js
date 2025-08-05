@@ -149,11 +149,11 @@ function scanArticles(dir, basePath = '') {
       // 确定文件夹路径
       const folder = basePath || '未分类';
       
+      // 只保存元数据，不包含文章内容
       const article = {
         id: slug,
         title: data.title || path.basename(item, '.md'),
         excerpt: data.excerpt || markdownContent.substring(0, 150) + '...',
-        content: markdownContent,
         publishedAt: data.publishedAt || new Date().toISOString().split('T')[0],
         tags: data.tags || [],
         slug: slug,
@@ -171,28 +171,96 @@ function scanArticles(dir, basePath = '') {
 
 // 生成文件夹树结构
 function generateFolderTree(articles) {
-  const folders = new Map();
+  const folderMap = new Map();
   
+  // 首先按文件夹路径分组文章
   articles.forEach(article => {
     const folderPath = article.folder;
-    if (!folders.has(folderPath)) {
-      folders.set(folderPath, []);
+    if (!folderMap.has(folderPath)) {
+      folderMap.set(folderPath, []);
     }
-    folders.get(folderPath).push(article);
+    folderMap.get(folderPath).push(article);
   });
   
-  return Array.from(folders.entries()).map(([folderPath, articles]) => ({
-    path: folderPath,
-    name: folderPath.split('/').pop() || folderPath,
-    articles: articles.map(article => ({
-      id: article.id,
-      title: article.title,
-      slug: article.slug,
-      publishedAt: article.publishedAt,
-      readingTime: article.readingTime,
-      tags: article.tags
-    }))
-  }));
+  // 构建树形结构
+  const buildTree = (folderPath) => {
+    const folderName = folderPath.split('/').pop() || folderPath;
+    const articles = folderMap.get(folderPath) || [];
+    
+    const node = {
+      path: folderPath,
+      name: folderName,
+      articles: articles.map(article => ({
+        id: article.id,
+        title: article.title,
+        slug: article.slug,
+        publishedAt: article.publishedAt,
+        readingTime: article.readingTime,
+        tags: article.tags
+      })),
+      children: []
+    };
+    
+    // 查找子文件夹
+    const childFolders = [];
+    for (const [path, pathArticles] of folderMap.entries()) {
+      if (path !== folderPath && path.startsWith(folderPath + '/')) {
+        // 检查是否是直接子文件夹（不是孙子文件夹）
+        const relativePath = path.substring(folderPath.length + 1);
+        if (!relativePath.includes('/')) {
+          // 这是直接子文件夹
+          childFolders.push(path);
+        }
+      }
+    }
+    
+    // 按文件夹名称排序子文件夹
+    childFolders.sort((a, b) => {
+      const aName = a.split('/').pop();
+      const bName = b.split('/').pop();
+      return aName.localeCompare(bName, 'zh-CN');
+    });
+    
+    // 构建子节点
+    for (const childPath of childFolders) {
+      const childNode = buildTree(childPath);
+      node.children.push(childNode);
+    }
+    
+    return node;
+  };
+  
+  // 获取顶级文件夹
+  const topLevelFolders = new Set();
+  for (const folderPath of folderMap.keys()) {
+    const parts = folderPath.split('/');
+    if (parts.length === 1) {
+      // 顶级文件夹
+      topLevelFolders.add(folderPath);
+    } else {
+      // 检查父文件夹是否存在
+      const parentFolder = parts.slice(0, -1).join('/');
+      if (!folderMap.has(parentFolder)) {
+        // 父文件夹不存在，这是一个顶级文件夹
+        topLevelFolders.add(folderPath);
+      }
+    }
+  }
+  
+  // 按文件夹名称排序顶级文件夹
+  const sortedTopLevelFolders = Array.from(topLevelFolders).sort((a, b) => {
+    const aName = a.split('/').pop();
+    const bName = b.split('/').pop();
+    return aName.localeCompare(bName, 'zh-CN');
+  });
+  
+  // 构建树形结构
+  const tree = [];
+  for (const folderPath of sortedTopLevelFolders) {
+    tree.push(buildTree(folderPath));
+  }
+  
+  return tree;
 }
 
 // 主函数
@@ -214,7 +282,7 @@ function main() {
     // 生成文件夹树
     const folderTree = generateFolderTree(articles);
     
-    // 生成输出数据
+    // 生成输出数据（只包含元数据，不包含文章内容）
     const output = {
       articles: articles,
       folderTree: folderTree,
@@ -233,10 +301,11 @@ function main() {
     // 更新缓存
     updateCache(articles);
     
-    console.log(`✅ 成功生成文章数据：`);
+    console.log(`✅ 成功生成文章元数据：`);
     console.log(`- 文章数量: ${articles.length}`);
     console.log(`- 文件夹数量: ${folderTree.length}`);
     console.log(`- 输出文件: ${OUTPUT_FILE}`);
+    console.log(`- 注意: 文章内容将通过 HTTP 请求动态加载`);
     
     // 显示文件夹结构
     console.log('\n文件夹结构:');
