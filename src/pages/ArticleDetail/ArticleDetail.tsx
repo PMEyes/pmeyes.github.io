@@ -32,6 +32,14 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
     }
   }, [slug]);
 
+  // 设置页面标题
+  useEffect(() => {
+    if (article) {
+      const siteTitle = languageService.getText('SITE_TITLE');
+      document.title = `${article.title} - ${siteTitle}`;
+    }
+  }, [article, language]);
+
   const loadArticle = async (articleSlug: string) => {
     try {
       setLoading(true);

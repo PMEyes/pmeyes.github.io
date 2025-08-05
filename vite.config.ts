@@ -57,28 +57,6 @@ function copyArticlesPlugin() {
         fs.copyFileSync(articlesJsonSource, articlesJsonTarget)
         console.log('✅ 文章元数据文件已复制到 dist/data/articles.json')
       }
-      
-      // 复制语言文件
-      const localesSource = path.resolve(__dirname, 'src/locales')
-      const localesTarget = path.resolve(__dirname, 'dist/locales')
-      
-      if (fs.existsSync(localesSource)) {
-        // 确保目标目录存在
-        if (!fs.existsSync(localesTarget)) {
-          fs.mkdirSync(localesTarget, { recursive: true })
-        }
-        
-        // 复制所有语言文件
-        const localeFiles = fs.readdirSync(localesSource)
-        for (const file of localeFiles) {
-          if (file.endsWith('.json')) {
-            const sourceFile = path.join(localesSource, file)
-            const targetFile = path.join(localesTarget, file)
-            fs.copyFileSync(sourceFile, targetFile)
-          }
-        }
-        console.log('✅ 语言文件已复制到 dist/locales/')
-      }
     }
   }
 }
@@ -126,26 +104,6 @@ function pwaPlugin() {
         } catch (error) {
           res.statusCode = 500
           res.end('Error loading articles data')
-        }
-      })
-      
-      // 处理语言文件请求
-      server.middlewares.use('/locales/:locale.json', (req, res) => {
-        try {
-          const locale = req.params.locale
-          const localePath = path.resolve(__dirname, `src/locales/${locale}.json`)
-          if (fs.existsSync(localePath)) {
-            const content = fs.readFileSync(localePath, 'utf-8')
-            res.statusCode = 200
-            res.setHeader('Content-Type', 'application/json')
-            res.end(content)
-          } else {
-            res.statusCode = 404
-            res.end('Locale file not found')
-          }
-        } catch (error) {
-          res.statusCode = 500
-          res.end('Error loading locale file')
         }
       })
       

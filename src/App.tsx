@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Language, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
 import { themeService } from '@/services/themeService';
