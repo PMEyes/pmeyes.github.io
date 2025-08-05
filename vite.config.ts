@@ -148,6 +148,35 @@ function pwaPlugin() {
           res.end('Error loading locale file')
         }
       })
+      
+      // 处理文章文件请求
+      server.middlewares.use('/articles/:path(*)', (req, res) => {
+        try {
+          const articlePath = req.params.path
+          const fullPath = path.resolve(__dirname, `articles/${articlePath}`)
+          
+          // 安全检查：确保路径在 articles 目录内
+          const articlesDir = path.resolve(__dirname, 'articles')
+          if (!fullPath.startsWith(articlesDir)) {
+            res.statusCode = 403
+            res.end('Access denied')
+            return
+          }
+          
+          if (fs.existsSync(fullPath)) {
+            const content = fs.readFileSync(fullPath, 'utf-8')
+            res.statusCode = 200
+            res.setHeader('Content-Type', 'text/markdown; charset=utf-8')
+            res.end(content)
+          } else {
+            res.statusCode = 404
+            res.end('Article file not found')
+          }
+        } catch (error) {
+          res.statusCode = 500
+          res.end('Error loading article file')
+        }
+      })
     }
   }
 }
