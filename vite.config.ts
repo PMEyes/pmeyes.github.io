@@ -6,56 +6,44 @@ import path from 'path'
 
 // 复制文章文件夹的插件
 function copyArticlesPlugin() {
+  // 复制文件夹的辅助函数
+  function copyDir(src: string, dest: string) {
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest, { recursive: true })
+    }
+    
+    const items = fs.readdirSync(src)
+    for (const item of items) {
+      const srcPath = path.join(src, item)
+      const destPath = path.join(dest, item)
+      const stat = fs.statSync(srcPath)
+      
+      if (stat.isDirectory()) {
+        copyDir(srcPath, destPath)
+      } else {
+        fs.copyFileSync(srcPath, destPath)
+      }
+    }
+  }
+
   return {
     name: 'copy-articles',
     writeBundle() {
-      // 复制文章文件夹
-      const sourceDir = path.resolve(__dirname, 'articles')
-      const targetDir = path.resolve(__dirname, 'dist/articles')
+      // 复制整个 data 目录
+      const dataSource = path.resolve(__dirname, 'data')
+      const dataTarget = path.resolve(__dirname, 'dist/data')
       
-      // 确保目标目录存在
-      if (!fs.existsSync(targetDir)) {
-        fs.mkdirSync(targetDir, { recursive: true })
-      }
-      
-      // 复制文件夹
-      function copyDir(src: string, dest: string) {
-        if (!fs.existsSync(dest)) {
-          fs.mkdirSync(dest, { recursive: true })
-        }
-        
-        const items = fs.readdirSync(src)
-        for (const item of items) {
-          const srcPath = path.join(src, item)
-          const destPath = path.join(dest, item)
-          const stat = fs.statSync(srcPath)
-          
-          if (stat.isDirectory()) {
-            copyDir(srcPath, destPath)
-          } else {
-            fs.copyFileSync(srcPath, destPath)
-          }
-        }
-      }
-      
-      if (fs.existsSync(sourceDir)) {
-        copyDir(sourceDir, targetDir)
-        console.log('✅ 文章文件夹已复制到 dist/articles')
-      }
-      
-      // 复制文章元数据文件
-      const articlesJsonSource = path.resolve(__dirname, 'src/data/articles.json')
-      const articlesJsonTarget = path.resolve(__dirname, 'dist/data/articles.json')
-      
-      if (fs.existsSync(articlesJsonSource)) {
+      if (fs.existsSync(dataSource)) {
         // 确保目标目录存在
-        const targetDir = path.dirname(articlesJsonTarget)
-        if (!fs.existsSync(targetDir)) {
-          fs.mkdirSync(targetDir, { recursive: true })
+        if (!fs.existsSync(dataTarget)) {
+          fs.mkdirSync(dataTarget, { recursive: true })
         }
         
-        fs.copyFileSync(articlesJsonSource, articlesJsonTarget)
-        console.log('✅ 文章元数据文件已复制到 dist/data/articles.json')
+        // 复制整个 data 目录
+        copyDir(dataSource, dataTarget)
+        console.log('✅ data 目录已复制到 dist/data')
+      } else {
+        console.log('⚠️  data 目录不存在，跳过复制')
       }
     }
   }
@@ -87,53 +75,24 @@ function pwaPlugin() {
           theme_color: "#007bff"
         }))
       })
-      
-      // 处理文章元数据请求
-      server.middlewares.use('/data/articles.json', (req, res) => {
-        try {
-          const articlesPath = path.resolve(__dirname, 'src/data/articles.json')
-          if (fs.existsSync(articlesPath)) {
-            const content = fs.readFileSync(articlesPath, 'utf-8')
-            res.statusCode = 200
-            res.setHeader('Content-Type', 'application/json')
-            res.end(content)
-          } else {
-            res.statusCode = 404
-            res.end('Articles data not found')
-          }
-        } catch (error) {
-          res.statusCode = 500
-          res.end('Error loading articles data')
-        }
-      })
-      
-      // 处理文章文件请求
-      server.middlewares.use('/articles/:path(*)', (req, res) => {
-        try {
-          const articlePath = req.params.path
-          const fullPath = path.resolve(__dirname, `articles/${articlePath}`)
-          
-          // 安全检查：确保路径在 articles 目录内
-          const articlesDir = path.resolve(__dirname, 'articles')
-          if (!fullPath.startsWith(articlesDir)) {
-            res.statusCode = 403
-            res.end('Access denied')
-            return
-          }
+
+      // 处理数据文件请求 - 简化版本
+      server.middlewares.use((req, res, next) => {
+        if (req.url && req.url.startsWith('/data/')) {
+          const filePath = req.url.replace('/data/', '')
+          const fullPath = path.resolve(__dirname, 'data', filePath)
           
           if (fs.existsSync(fullPath)) {
-            const content = fs.readFileSync(fullPath, 'utf-8')
-            res.statusCode = 200
-            res.setHeader('Content-Type', 'text/markdown; charset=utf-8')
-            res.end(content)
-          } else {
-            res.statusCode = 404
-            res.end('Article file not found')
+            const ext = path.extname(fullPath)
+            const contentType = ext === '.json' ? 'application/json' : 'text/plain'
+            
+            res.setHeader('Content-Type', contentType)
+            res.setHeader('Cache-Control', 'no-cache')
+            res.end(fs.readFileSync(fullPath, 'utf8'))
+            return
           }
-        } catch (error) {
-          res.statusCode = 500
-          res.end('Error loading article file')
         }
+        next()
       })
     }
   }

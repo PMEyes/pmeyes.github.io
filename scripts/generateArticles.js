@@ -9,8 +9,9 @@ const __dirname = path.dirname(__filename);
 
 // 文章文件夹路径
 const ARTICLES_DIR = path.join(__dirname, '../articles');
-const OUTPUT_FILE = path.join(__dirname, '../src/data/articles.json');
-const CACHE_FILE = path.join(__dirname, '../src/data/.articles-cache.json');
+const OUTPUT_FILE = path.join(__dirname, '../data/articles.json');
+const CACHE_FILE = path.join(__dirname, '../data/.articles-cache.json');
+const ARTICLES_JSON_DIR = path.join(__dirname, '../dist/articles-json');
 
 // 计算文件哈希值
 function calculateFileHash(filePath) {
@@ -162,6 +163,22 @@ function scanArticles(dir, basePath = '') {
         filePath: path.relative(ARTICLES_DIR, fullPath)
       };
       
+      // 生成完整的文章 JSON 文件
+      const articleJson = {
+        ...article,
+        content: markdownContent,
+        rawContent: content // 包含 front matter 的原始内容
+      };
+      
+      // 确保输出目录存在
+      if (!fs.existsSync(ARTICLES_JSON_DIR)) {
+        fs.mkdirSync(ARTICLES_JSON_DIR, { recursive: true });
+      }
+      
+      // 保存完整的文章 JSON 文件
+      const articleJsonPath = path.join(ARTICLES_JSON_DIR, `${slug}.json`);
+      fs.writeFileSync(articleJsonPath, JSON.stringify(articleJson, null, 2));
+      
       articles.push(article);
     }
   }
@@ -305,12 +322,19 @@ function main() {
     console.log(`- 文章数量: ${articles.length}`);
     console.log(`- 文件夹数量: ${folderTree.length}`);
     console.log(`- 输出文件: ${OUTPUT_FILE}`);
-    console.log(`- 注意: 文章内容将通过 HTTP 请求动态加载`);
+    console.log(`- JSON 文件目录: ${ARTICLES_JSON_DIR}`);
+    console.log(`- 注意: 文章内容已保存为 JSON 文件，可通过 HTTP 请求访问`);
     
     // 显示文件夹结构
     console.log('\n文件夹结构:');
     folderTree.forEach(folder => {
       console.log(`  ${folder.path} (${folder.articles.length} 篇文章)`);
+    });
+    
+    // 显示生成的 JSON 文件
+    console.log('\n生成的 JSON 文件:');
+    articles.forEach(article => {
+      console.log(`  ${article.slug}.json`);
     });
     
   } catch (error) {

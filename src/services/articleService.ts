@@ -54,71 +54,28 @@ class ArticleService {
     }
 
     try {
-      // 动态加载文章内容
-      const response = await fetch(`/articles/${articleMeta.filePath}`);
+      // 从 JSON 文件加载文章内容
+      const response = await fetch(`/data/articles-json/${slug}.json`);
       if (!response.ok) {
         throw new Error(`Failed to load article: ${response.statusText}`);
       }
       
-      const content = await response.text();
-      
-      // 解析 Markdown front matter
-      const { data, content: markdownContent } = this.parseFrontMatter(content);
+      const articleData = await response.json();
       
       return {
         ...articleMeta,
-        content: markdownContent,
-        // 使用 front matter 中的数据覆盖元数据
-        title: data.title || articleMeta.title,
-        excerpt: data.excerpt || articleMeta.excerpt,
-        publishedAt: data.publishedAt || articleMeta.publishedAt,
-        tags: data.tags || articleMeta.tags,
-        readingTime: data.readingTime || articleMeta.readingTime,
+        content: articleData.content,
+        // 使用 JSON 文件中的数据覆盖元数据
+        title: articleData.title || articleMeta.title,
+        excerpt: articleData.excerpt || articleMeta.excerpt,
+        publishedAt: articleData.publishedAt || articleMeta.publishedAt,
+        tags: articleData.tags || articleMeta.tags,
+        readingTime: articleData.readingTime || articleMeta.readingTime,
       };
     } catch (error) {
       console.error('加载文章内容失败:', error);
       return null;
     }
-  }
-
-  // 解析 Markdown front matter
-  private parseFrontMatter(content: string): { data: any; content: string } {
-    const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-    const match = content.match(frontMatterRegex);
-    
-    if (match) {
-      const frontMatter = match[1];
-      const markdownContent = match[2];
-      
-      // 简单的 YAML 解析（仅支持基本格式）
-      const data: any = {};
-      const lines = frontMatter.split('\n');
-      
-      for (const line of lines) {
-        const colonIndex = line.indexOf(':');
-        if (colonIndex > 0) {
-          const key = line.substring(0, colonIndex).trim();
-          let value = line.substring(colonIndex + 1).trim();
-          
-          // 处理数组格式
-          if (value.startsWith('[') && value.endsWith(']')) {
-            const arrayValue = value.slice(1, -1).split(',').map(item => item.trim().replace(/"/g, ''));
-            data[key] = arrayValue;
-          }
-          // 处理字符串格式
-          else if (value.startsWith('"') && value.endsWith('"')) {
-            data[key] = value.slice(1, -1);
-          }
-          else {
-            data[key] = value;
-          }
-        }
-      }
-      
-      return { data, content: markdownContent };
-    }
-    
-    return { data: {}, content };
   }
 
   async searchArticles(filters: SearchFilters): Promise<ArticleMeta[]> {

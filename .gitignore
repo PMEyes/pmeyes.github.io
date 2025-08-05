@@ -100,4 +100,7 @@ lib-cov
 coverage
 
 # Articles cache
-src/data/.articles-cache.json 
+src/data/.articles-cache.json
+
+# Data directory (moved to root)
+data/ 
