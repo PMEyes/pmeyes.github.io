@@ -149,11 +149,11 @@ function scanArticles(dir, basePath = '') {
       // 确定文件夹路径
       const folder = basePath || '未分类';
       
+      // 只保存元数据，不包含文章内容
       const article = {
         id: slug,
         title: data.title || path.basename(item, '.md'),
         excerpt: data.excerpt || markdownContent.substring(0, 150) + '...',
-        content: markdownContent,
         publishedAt: data.publishedAt || new Date().toISOString().split('T')[0],
         tags: data.tags || [],
         slug: slug,
@@ -282,7 +282,7 @@ function main() {
     // 生成文件夹树
     const folderTree = generateFolderTree(articles);
     
-    // 生成输出数据
+    // 生成输出数据（只包含元数据，不包含文章内容）
     const output = {
       articles: articles,
       folderTree: folderTree,
@@ -301,10 +301,11 @@ function main() {
     // 更新缓存
     updateCache(articles);
     
-    console.log(`✅ 成功生成文章数据：`);
+    console.log(`✅ 成功生成文章元数据：`);
     console.log(`- 文章数量: ${articles.length}`);
     console.log(`- 文件夹数量: ${folderTree.length}`);
     console.log(`- 输出文件: ${OUTPUT_FILE}`);
+    console.log(`- 注意: 文章内容将通过 HTTP 请求动态加载`);
     
     // 显示文件夹结构
     console.log('\n文件夹结构:');

@@ -33,9 +33,10 @@ export const testLanguageVariables = () => {
 /**
  * 验证语言文件中的变量格式
  */
-export const validateLanguageFiles = () => {
+export const validateLanguageFiles = async () => {
   const zhCN = languageService.getLocaleData();
-  const enUS = languageService.getAllLocales()['en-US'];
+  const allLocales = await languageService.getAllLocales();
+  const enUS = allLocales['en-US'];
   
   console.log('=== 语言文件验证 ===');
   

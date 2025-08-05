@@ -19,6 +19,7 @@ export interface ArticleMeta {
   slug: string;
   readingTime: number;
   folder?: string;
+  filePath?: string;
 }
 
 export interface LocaleData {
