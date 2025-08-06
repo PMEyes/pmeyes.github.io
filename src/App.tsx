@@ -7,15 +7,13 @@ import { articleService } from '@/services/articleService';
 import { ArticleMeta, SearchFilters } from '@/types';
 import { store } from '@/store';
 import { useLocaleRegistration } from '@/hooks/useLocaleRegistration';
+import { loadingService } from '@/services/loadingService';
 import Navbar from '@/components/Navbar/Navbar';
-import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation';
-import PageLoading from '@/components/PageLoading/PageLoading';
 import Home from '@/pages/Home/Home';
 import Articles from '@/pages/Articles/Articles';
 import ArticleDetail from '@/pages/ArticleDetail/ArticleDetail';
 import About from '@/pages/About/About';
 import ThemePreview from '@/pages/ThemePreview/ThemePreview';
-import LoadingTest from '@/pages/LoadingTest/LoadingTest';
 import NotFound from '@/pages/NotFound/NotFound';
 
 function AppContent() {
@@ -49,15 +47,28 @@ function AppContent() {
     },
   });
 
-
-
+  // 1. 语言包注册完成后，初始化主题
   useEffect(() => {
     if (isRegistered) {
-      loadArticles();
-      // 初始化主题
+      console.log('Initializing theme...');
       themeService.initializeTheme();
     }
   }, [isRegistered]);
+
+  // 2. 语言包注册完成后，加载文章数据
+  useEffect(() => {
+    if (isRegistered) {
+      loadArticles();
+    }
+  }, [isRegistered]);
+
+  // 3. 所有初始化完成后，隐藏加载动画
+  useEffect(() => {
+    if (isRegistered && !loading && !localeLoading) {
+      console.log('All initialization completed, hiding loading animation');
+      loadingService.hide();
+    }
+  }, [isRegistered, loading, localeLoading]);
 
   // 监听语言变化，更新页面标题
   useEffect(() => {
@@ -67,13 +78,17 @@ function AppContent() {
     }
   }, [currentLanguage, isRegistered, getText]);
 
+  // 加载文章数据
   const loadArticles = async () => {
     try {
+      console.log('Loading articles...');
       setLoading(true);
       setError(null);
       const articlesData = await articleService.getAllArticles();
       setArticles(articlesData);
+      console.log('Articles loaded successfully');
     } catch (err) {
+      console.error('Failed to load articles:', err);
       setError(err instanceof Error ? err.message : '加载文章失败');
     } finally {
       setLoading(false);
@@ -127,27 +142,14 @@ function AppContent() {
     onRetry: loadArticles,
   };
 
-  // 如果语言包服务还未注册完成，显示加载动画
+  // 如果语言包服务还未注册完成，不渲染主界面
   if (!isRegistered) {
-    return (
-      <div className="app">
-        <LoadingAnimation 
-          getText={getText}
-          theme={theme}
-        />
-      </div>
-    );
+    return null;
   }
 
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="app">
-        {/* 页面刷新加载动画 */}
-        <PageLoading 
-          getText={getText}
-          theme={theme}
-        />
-        
         <Navbar 
           language={currentLanguage}
           theme={theme}
@@ -163,7 +165,6 @@ function AppContent() {
             <Route path="/blog/:slug" element={<ArticleDetail contextValue={contextValue} />} />
             <Route path="/about" element={<About contextValue={contextValue} />} />
             <Route path="/themes" element={<ThemePreview currentTheme={theme} onThemeChange={handleThemeChange} />} />
-            <Route path="/loading-test" element={<LoadingTest contextValue={contextValue} />} />
             <Route path="*" element={<NotFound contextValue={contextValue} />} />
           </Routes>
         </main>

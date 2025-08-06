@@ -239,7 +239,7 @@ function watchLocales() {
 }
 
 // 如果直接运行此脚本
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && process.argv[1].endsWith('generateLocales.js')) {
   const args = process.argv.slice(2);
   
   if (args.includes('--watch') || args.includes('-w')) {

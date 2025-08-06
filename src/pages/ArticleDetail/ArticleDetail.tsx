@@ -3,9 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
 import ReactMarkdown from 'react-markdown';
-// 暂时禁用语法高亮以避免类型错误
-// import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-light';
-// import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Article, Language } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
