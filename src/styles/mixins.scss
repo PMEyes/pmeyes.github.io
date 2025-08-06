@@ -1,0 +1,54 @@
+@use './variables' as *;
+
+// 布局混合器
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// 响应式混合器
+@mixin responsive($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: $breakpoint-mobile) {
+      @content;
+    }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $breakpoint-tablet) {
+      @content;
+    }
+  } @else if $breakpoint == desktop {
+    @media (max-width: $breakpoint-desktop) {
+      @content;
+    }
+  }
+}
+
+// 按钮基础混合器
+@mixin button-base {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all $transition-normal;
+  text-align: center;
+}
+
+// 卡片基础混合器
+@mixin card-base {
+  background: $background-dark;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  padding: 1.25rem;
+  transition: box-shadow $transition-normal;
+} 

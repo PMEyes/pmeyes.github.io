@@ -1,3 +1,7 @@
 // 导入所有样式文件
-@use './global';
+@use './variables';
+@use './mixins';
+@use './reset';
+@use './base';
+@use './utilities';
 @use './pages'; 

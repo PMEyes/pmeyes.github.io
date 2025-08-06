@@ -1,139 +1,7 @@
-@use "sass:color";
+@use './variables' as *;
+@use './mixins' as *;
 
-// CSS变量定义（默认值）
-:root {
-  --primary: #007bff;
-  --primary-hover: #0056b3;
-  --secondary: #6c757d;
-  --success: #28a745;
-  --danger: #dc3545;
-  --warning: #ffc107;
-  --info: #17a2b8;
-  --light: #f8f9fa;
-  --dark: #343a40;
-  --text-primary: #333;
-  --text-secondary: #666;
-  --text-muted: #999;
-  --background-light: #f8f9fa;
-  --background-dark: #ffffff;
-  --border-color: #ddd;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-}
-
-// 变量定义（使用CSS变量）
-$primary-color: var(--primary);
-$primary-hover: var(--primary-hover);
-$secondary-color: var(--secondary);
-$success-color: var(--success);
-$danger-color: var(--danger);
-$warning-color: var(--warning);
-$info-color: var(--info);
-$light-color: var(--light);
-$dark-color: var(--dark);
-
-$text-primary: var(--text-primary);
-$text-secondary: var(--text-secondary);
-$text-muted: var(--text-muted);
-
-$background-light: var(--background-light);
-$background-dark: var(--background-dark);
-$border-color: var(--border-color);
-$border-radius: 4px;
-$border-radius-sm: 2px;
-$border-radius-lg: 8px;
-$border-radius-xl: 12px;
-
-$shadow-sm: 0 1px 3px var(--shadow-color);
-$shadow-md: 0 4px 6px var(--shadow-color);
-$shadow-lg: 0 8px 25px var(--shadow-color);
-
-$transition-fast: 0.2s ease;
-$transition-normal: 0.3s ease;
-$transition-slow: 0.5s ease;
-
-$breakpoint-mobile: 768px;
-$breakpoint-tablet: 1024px;
-$breakpoint-desktop: 1200px;
-
-// 混合器
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@mixin flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@mixin responsive($breakpoint) {
-  @if $breakpoint == mobile {
-    @media (max-width: $breakpoint-mobile) {
-      @content;
-    }
-  } @else if $breakpoint == tablet {
-    @media (max-width: $breakpoint-tablet) {
-      @content;
-    }
-  } @else if $breakpoint == desktop {
-    @media (max-width: $breakpoint-desktop) {
-      @content;
-    }
-  }
-}
-
-@mixin button-base {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: $border-radius;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all $transition-normal;
-  text-align: center;
-}
-
-@mixin card-base {
-  background: $background-dark;
-  border-radius: $border-radius-lg;
-  box-shadow: $shadow-sm;
-  padding: 1.25rem;
-  transition: box-shadow $transition-normal;
-}
-
-// 重置样式
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-// 基础列表样式重置
-ul, ol {
-  list-style: none;
-  padding-left: 0;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.6;
-  color: $text-primary;
-  background-color: var(--background-light);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: background-color $transition-normal, color $transition-normal;
-}
-
-// 基础样式
+// 容器样式
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -144,6 +12,7 @@ body {
   }
 }
 
+// 按钮样式
 .button {
   @include button-base;
   background: $primary-color;
@@ -180,6 +49,7 @@ body {
   }
 }
 
+// 卡片样式
 .card {
   @include card-base;
   
@@ -198,6 +68,7 @@ body {
   }
 }
 
+// 输入框样式
 .input {
   width: 100%;
   padding: 0.75rem;
@@ -213,6 +84,7 @@ body {
   }
 }
 
+// 标签样式
 .tag {
   display: inline-flex;
   align-items: center;
@@ -374,41 +246,4 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-
-
-// 工具类
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
-
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
-
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
-.p-4 { padding: 2rem; }
-
-.d-none { display: none; }
-.d-block { display: block; }
-.d-flex { display: flex; }
-.d-grid { display: grid; }
-
-.w-100 { width: 100%; }
-.h-100 { height: 100%; }
-
-// 响应式工具类
-@include responsive(mobile) {
-  .d-mobile-none { display: none; }
-  .d-mobile-block { display: block; }
-  .d-mobile-flex { display: flex; }
 } 

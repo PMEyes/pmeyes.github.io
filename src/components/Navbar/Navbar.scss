@@ -1,11 +1,9 @@
-@use '../../styles/global' as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 .navbar {
   background: var(--background-dark);
   box-shadow: $shadow-sm;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
   transition: background-color $transition-normal;
   
   // 夜间主题的导航栏样式
@@ -72,11 +70,6 @@
     
     @include responsive(tablet) {
       margin: 0 1rem;
-      max-width: 200px;
-    }
-    
-    @include responsive(tablet) {
-      max-width: 150px;
     }
   }
   
