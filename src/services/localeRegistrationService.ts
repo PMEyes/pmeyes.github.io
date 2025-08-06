@@ -1,4 +1,4 @@
-import { Language, LocaleData } from '@/types';
+import { Language } from '@/types';
 import { languageService } from './languageService';
 import { store } from '@/store';
 import { setLanguage } from '@/store/slices/appSlice';

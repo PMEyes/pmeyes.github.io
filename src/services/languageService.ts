@@ -1,6 +1,5 @@
 import { Language, LocaleData, LocaleVariables } from '@/types';
 import { DEFAULT_LANGUAGE, STORAGE_KEYS } from '@/constants';
-import { httpService } from './httpService';
 import { store } from '@/store';
 import { setLoading, setError } from '@/store/slices/appSlice';
 
