@@ -1,20 +1,26 @@
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { Language, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
 import { themeService } from '@/services/themeService';
 import { articleService } from '@/services/articleService';
+import { localeRegistrationService } from '@/services/localeRegistrationService';
 import { ArticleMeta, SearchFilters } from '@/types';
+import { store } from '@/store';
+import { useLocaleRegistration } from '@/hooks/useLocaleRegistration';
 import Navbar from '@/components/Navbar/Navbar';
+import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation';
+import PageLoading from '@/components/PageLoading/PageLoading';
 import Home from '@/pages/Home/Home';
 import Articles from '@/pages/Articles/Articles';
 import ArticleDetail from '@/pages/ArticleDetail/ArticleDetail';
 import About from '@/pages/About/About';
 import ThemePreview from '@/pages/ThemePreview/ThemePreview';
+import LoadingTest from '@/pages/LoadingTest/LoadingTest';
 import NotFound from '@/pages/NotFound/NotFound';
 
-function App() {
-  const [language, setLanguage] = useState<Language>(languageService.getCurrentLanguage());
+function AppContent() {
   const [theme, setTheme] = useState<Theme>(themeService.getCurrentTheme());
   const [articles, setArticles] = useState<ArticleMeta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,17 +30,44 @@ function App() {
     tags: [],
   });
 
+  // 使用语言包注册 hook
+  const {
+    isRegistered,
+    isLoading: localeLoading,
+    error: localeError,
+    currentLanguage,
+    switchLanguage,
+    getText,
+  } = useLocaleRegistration({
+    autoRegister: true,
+    onRegistrationComplete: () => {
+      console.log('Locale service registered successfully');
+    },
+    onRegistrationError: (error) => {
+      console.error('Locale registration failed:', error);
+    },
+    onLanguageSwitch: (language) => {
+      console.log(`Language switched to: ${language}`);
+    },
+  });
+
+
+
   useEffect(() => {
-    loadArticles();
-    // 初始化主题
-    themeService.initializeTheme();
-  }, []);
+    if (isRegistered) {
+      loadArticles();
+      // 初始化主题
+      themeService.initializeTheme();
+    }
+  }, [isRegistered]);
 
   // 监听语言变化，更新页面标题
   useEffect(() => {
-    const siteTitle = languageService.getText('SITE_TITLE');
-    document.title = siteTitle;
-  }, [language]);
+    if (isRegistered) {
+      const siteTitle = getText('SITE_TITLE');
+      document.title = siteTitle;
+    }
+  }, [currentLanguage, isRegistered, getText]);
 
   const loadArticles = async () => {
     try {
@@ -49,9 +82,12 @@ function App() {
     }
   };
 
-  const handleLanguageChange = (newLanguage: Language) => {
-    languageService.setLanguage(newLanguage);
-    setLanguage(newLanguage);
+  const handleLanguageChange = async (newLanguage: Language) => {
+    try {
+      await switchLanguage(newLanguage);
+    } catch (error) {
+      console.error('Failed to switch language:', error);
+    }
   };
 
   const handleThemeChange = (newTheme: Theme) => {
@@ -80,11 +116,11 @@ function App() {
   };
 
   const contextValue = {
-    language,
+    language: currentLanguage,
     theme,
     articles,
-    loading,
-    error,
+    loading: loading || localeLoading,
+    error: error || localeError || null,
     searchFilters,
     onLanguageChange: handleLanguageChange,
     onThemeChange: handleThemeChange,
@@ -93,11 +129,29 @@ function App() {
     onRetry: loadArticles,
   };
 
+  // 如果语言包服务还未注册完成，显示加载动画
+  if (!isRegistered) {
+    return (
+      <div className="app">
+        <LoadingAnimation 
+          getText={getText}
+          theme={theme}
+        />
+      </div>
+    );
+  }
+
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="app">
+        {/* 页面刷新加载动画 */}
+        <PageLoading 
+          getText={getText}
+          theme={theme}
+        />
+        
         <Navbar 
-          language={language}
+          language={currentLanguage}
           theme={theme}
           onLanguageChange={handleLanguageChange}
           onThemeChange={handleThemeChange}
@@ -111,11 +165,20 @@ function App() {
             <Route path="/blog/:slug" element={<ArticleDetail contextValue={contextValue} />} />
             <Route path="/about" element={<About contextValue={contextValue} />} />
             <Route path="/themes" element={<ThemePreview currentTheme={theme} onThemeChange={handleThemeChange} />} />
+            <Route path="/loading-test" element={<LoadingTest contextValue={contextValue} />} />
             <Route path="*" element={<NotFound contextValue={contextValue} />} />
           </Routes>
         </main>
       </div>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
   );
 }
 

@@ -4,28 +4,54 @@ import { MAX_SEARCH_RESULTS } from '@/constants';
 // 从 JSON 文件加载文章元数据
 let articlesMeta: ArticleMeta[] = [];
 let folderTree: any[] = [];
+let isLoadingMeta = false;
+let metaLoadPromise: Promise<void> | null = null;
 
   // 动态加载文章元数据
   async function loadArticlesMeta(): Promise<void> {
+    // 如果正在加载，返回现有的 Promise
+    if (isLoadingMeta && metaLoadPromise) {
+      return metaLoadPromise;
+    }
+
+    // 如果已经加载完成，直接返回
+    if (articlesMeta.length > 0 || folderTree.length > 0) {
+      return;
+    }
+
+    // 开始加载
+    isLoadingMeta = true;
+    metaLoadPromise = _loadArticlesMeta();
+    
+    try {
+      await metaLoadPromise;
+    } finally {
+      isLoadingMeta = false;
+      metaLoadPromise = null;
+    }
+  }
+
+  async function _loadArticlesMeta(): Promise<void> {
     try {
       const response = await fetch('/data/articles.json');
       if (!response.ok) {
         throw new Error(`Failed to load articles meta: ${response.statusText}`);
       }
     
-    const data = await response.json();
-    articlesMeta = data.articles || [];
-    folderTree = data.folderTree || [];
-  } catch (error) {
-    console.error('加载文章元数据失败:', error);
-    // 如果加载失败，使用空数组作为后备
-    articlesMeta = [];
-    folderTree = [];
+      const data = await response.json();
+      articlesMeta = data.articles || [];
+      folderTree = data.folderTree || [];
+    } catch (error) {
+      console.error('加载文章元数据失败:', error);
+      // 如果加载失败，使用空数组作为后备
+      articlesMeta = [];
+      folderTree = [];
+    }
   }
-}
 
 class ArticleService {
   private initialized = false;
+  private pendingRequests = new Map<string, Promise<Article | null>>();
 
   // 确保元数据已加载
   private async ensureInitialized(): Promise<void> {
@@ -45,6 +71,25 @@ class ArticleService {
   }
 
   async getArticleBySlug(slug: string): Promise<Article | null> {
+    // 检查是否有正在进行的相同请求
+    if (this.pendingRequests.has(slug)) {
+      return this.pendingRequests.get(slug)!;
+    }
+
+    // 创建新的请求
+    const requestPromise = this._getArticleBySlug(slug);
+    this.pendingRequests.set(slug, requestPromise);
+
+    try {
+      const result = await requestPromise;
+      return result;
+    } finally {
+      // 请求完成后移除
+      this.pendingRequests.delete(slug);
+    }
+  }
+
+  private async _getArticleBySlug(slug: string): Promise<Article | null> {
     await this.ensureInitialized();
     await new Promise(resolve => setTimeout(resolve, 200));
     
