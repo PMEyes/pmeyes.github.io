@@ -72,9 +72,10 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
     if (folderParam && folderParam !== selectedFolder) {
       setSelectedFolder(folderParam);
       handleFolderClick(folderParam, false); // 不更新标签，避免重复
-    } else if (!folderParam && !selectedFolder) {
-      // 只有在没有选中目录时才设置为空
+    } else if (!folderParam && selectedFolder) {
+      // 如果URL中没有目录参数但当前有选中的目录，清除目录选择
       setSelectedFolder('');
+      onSearch({ query: '', tags: [], folder: '' });
     }
   }, [searchParams, onSearch, selectedFolder]);
 
@@ -105,12 +106,11 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
 
   const handleClearFilters = () => {
     setSelectedTags([]);
-    // 不清除目录选择，只清除标签筛选
-    // 根据当前选中的目录重新搜索
+    // 清除标签筛选，但保持目录筛选
     if (selectedFolder) {
       onSearch({ query: '', tags: [], folder: selectedFolder });
     } else {
-      onClearSearch();
+      onSearch({ query: '', tags: [], folder: '' });
     }
   };
 
@@ -150,13 +150,14 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
         const allTags = articleService.getAllTags();
         setAllTags(allTags);
       }
-      onClearSearch();
+      // 直接调用 loadArticles 而不是 onClearSearch，避免状态冲突
+      onSearch({ query: '', tags: [], folder: '' });
     }
   };
 
   const handleFolderClickWithClear = (folderPath: string) => {
-    handleFolderClick(folderPath);
-    setSelectedTags([]); // 清空已选标签
+    setSelectedTags([]); // 先清空已选标签
+    handleFolderClick(folderPath, true); // 确保更新标签列表
   };
 
   if (error) {

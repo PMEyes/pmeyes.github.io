@@ -302,3 +302,74 @@ dist/data/                     # 构建后的结构
 ---
 
 ✅ **脚本系统已完善，支持自动化文章生成、转换和部署流程！** 
+
+# 脚本说明
+
+## Node.js 版本检查
+
+### checkNodeVersion.js
+Node.js 版本检查脚本，用于验证当前 Node.js 版本是否符合项目要求。
+
+**功能：**
+- 检查当前 Node.js 版本是否 >= 22.12.0
+- 如果版本过低，显示错误信息和快速升级提示
+- 如果版本符合要求，显示通过信息
+- 详细升级指南请查看 `docs/NodeJS升级指南.md`
+
+**使用方法：**
+```bash
+# 直接运行
+node scripts/checkNodeVersion.js
+
+# 通过 npm 脚本运行
+npm run check-node
+```
+
+## 集成到项目脚本
+
+所有主要的 npm 脚本都会在运行前自动检查 Node.js 版本：
+
+- `npm run dev` - 开发服务器
+- `npm run build` - 构建项目
+- `npm run lint` - 代码检查
+- `npm run preview` - 预览构建结果
+- `npm run generate-articles` - 生成文章
+- `npm run convert-articles` - 转换文章
+- `npm run deploy` - 部署项目
+
+如果 Node.js 版本不符合要求，脚本会：
+1. 显示当前版本和要求版本
+2. 提供升级指南的链接
+3. 退出执行，防止兼容性问题
+
+## 版本要求
+
+- **最低版本：** Node.js >= 22.12.0
+- **推荐版本：** Node.js >= 22.12.0
+- **npm 版本：** >= 10.0.0
+
+## 升级建议
+
+推荐使用 nvm 管理 Node.js 版本：
+
+```bash
+# 安装 nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# 重新加载终端
+source ~/.zshrc
+
+# 安装 Node.js 22
+nvm install 22
+nvm use 22
+nvm alias default 22
+```
+
+## 故障排除
+
+如果遇到版本检查问题：
+
+1. 确保使用正确的 Node.js 版本
+2. 运行 `npm run upgrade-guide` 查看详细升级步骤
+3. 升级后重新安装依赖：`npm install`
+4. 清除缓存：`npm cache clean --force` 

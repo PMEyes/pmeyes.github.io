@@ -75,12 +75,8 @@ function App() {
 
   const handleClearSearch = () => {
     setSearchFilters({ query: '', tags: [] });
-    // 保持当前的目录筛选
-    if (searchFilters.folder) {
-      handleSearch({ query: '', tags: [], folder: searchFilters.folder });
-    } else {
-      loadArticles();
-    }
+    // 清除所有筛选条件，包括目录筛选
+    loadArticles();
   };
 
   const contextValue = {
