@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { Article, Language } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
+import ErrorDisplay from '@/components/ErrorDisplay/ErrorDisplay';
 import './ArticleDetail.scss';
 
 interface ArticleDetailProps {
@@ -83,16 +84,13 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
 
   if (error || !article) {
     return (
-      <div className="error-container">
-        <h2>{languageService.getText('ERROR_OCCURRED')}</h2>
-        <p>{error || '文章未找到'}</p>
-        <button className="button" onClick={onRetry}>
-          {languageService.getText('RETRY')}
-        </button>
-        <Link to="/" className="button button-secondary">
-          {languageService.getText('BACK_TO_HOME')}
-        </Link>
-      </div>
+      <ErrorDisplay
+        language={language}
+        title={languageService.getText('ERROR_OCCURRED')}
+        message={error || '文章未找到'}
+        onRetry={onRetry}
+        showHomeButton={true}
+      />
     );
   }
 

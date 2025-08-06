@@ -134,4 +134,47 @@
       }
     }
   }
+  
+  // 文章内容样式
+  .article-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+    color: $text-primary;
+    
+    h1, h2, h3, h4, h5, h6 {
+      margin: 1.5rem 0 0.75rem 0;
+      color: $text-primary;
+    }
+    
+    p {
+      margin-bottom: 0.75rem;
+    }
+    
+    code {
+      background: $light-color;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    pre {
+      background: $light-color;
+      padding: 0.75rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+    
+    ul, ol {
+      margin-bottom: 0.75rem;
+    }
+    
+    blockquote {
+      border-left: 4px solid $primary-color;
+      padding-left: 1rem;
+      margin: 0.75rem 0;
+      color: $text-secondary;
+    }
+  }
 } 

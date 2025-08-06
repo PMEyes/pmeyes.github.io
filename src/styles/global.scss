@@ -376,21 +376,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-// 错误样式
-.error-container {
-  text-align: center;
-  padding: 2rem;
-  
-  h2 {
-    color: $danger-color;
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    color: $text-secondary;
-    margin-bottom: 1.5rem;
-  }
-}
+
 
 // 工具类
 .text-center { text-align: center; }

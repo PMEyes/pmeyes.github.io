@@ -7,6 +7,7 @@ import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
 import FolderList from './FolderTree/FolderList';
 import Modal from '@/components/Modal/Modal';
+import ErrorDisplay from '@/components/ErrorDisplay/ErrorDisplay';
 import './Articles.scss';
 
 interface ArticlesProps {
@@ -160,13 +161,11 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <h2>{languageService.getText('ERROR_OCCURRED')}</h2>
-        <p>{error}</p>
-        <button className="button" onClick={onRetry}>
-          {languageService.getText('RETRY')}
-        </button>
-      </div>
+      <ErrorDisplay
+        language={language}
+        message={error}
+        onRetry={onRetry}
+      />
     );
   }
 

@@ -303,4 +303,28 @@
       }
     }
   }
+  
+  // 搜索框样式
+  .search-container {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      padding-left: 2.5rem;
+      border: 1px solid $border-color;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-secondary;
+    }
+  }
 } 

@@ -5,6 +5,7 @@ import { zhCN, enUS } from 'date-fns/locale';
 import { ArticleMeta, Language, Theme } from '@/types';
 import { languageService } from '@/services/languageService';
 import { articleService } from '@/services/articleService';
+import ErrorDisplay from '@/components/ErrorDisplay/ErrorDisplay';
 import './Home.scss';
 
 interface HomeProps {
@@ -55,13 +56,11 @@ const Home: React.FC<HomeProps> = ({ contextValue }) => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <h2>{languageService.getText('ERROR_OCCURRED')}</h2>
-        <p>{error}</p>
-        <button className="button" onClick={onRetry}>
-          {languageService.getText('RETRY')}
-        </button>
-      </div>
+      <ErrorDisplay
+        language={language}
+        message={error}
+        onRetry={onRetry}
+      />
     );
   }
 

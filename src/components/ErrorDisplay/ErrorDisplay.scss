@@ -1,0 +1,535 @@
+@use '../../styles/global.scss' as *;
+
+.error-display {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--background-light) 0%, var(--background-dark) 100%);
+}
+
+// 夜间主题样式
+body.theme-night .error-display {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+}
+
+// 阳光主题样式
+body.theme-sunny .error-display {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+}
+
+// 宁静主题样式
+body.theme-calm .error-display {
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+}
+
+// 活力主题样式
+body.theme-energetic .error-display {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e5f5 100%);
+}
+
+// 温馨主题样式
+body.theme-cozy .error-display {
+  background: linear-gradient(135deg, #faf7f5 0%, #efebe9 100%);
+}
+
+// 专业主题样式
+body.theme-professional .error-display {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+}
+
+// 白天主题样式
+body.theme-day .error-display {
+  background: linear-gradient(135deg, #fafafa 0%, #e3f2fd 100%);
+}
+
+.error-content {
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  padding: 3rem 2rem;
+  background: var(--background-dark);
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-lg;
+  position: relative;
+  overflow: hidden;
+  
+  // 添加微妙的背景装饰
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 123, 255, 0.03) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+// 夜间主题样式
+body.theme-night .error-content {
+  background: #1e1e1e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(187, 134, 252, 0.03) 0%, transparent 70%);
+  }
+}
+
+// 阳光主题样式
+body.theme-sunny .error-content {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(255, 107, 53, 0.15);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(255, 107, 53, 0.03) 0%, transparent 70%);
+  }
+}
+
+// 宁静主题样式
+body.theme-calm .error-content {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.15);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(76, 175, 80, 0.03) 0%, transparent 70%);
+  }
+}
+
+// 活力主题样式
+body.theme-energetic .error-content {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(156, 39, 176, 0.15);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(156, 39, 176, 0.03) 0%, transparent 70%);
+  }
+}
+
+// 温馨主题样式
+body.theme-cozy .error-content {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(141, 110, 99, 0.15);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(141, 110, 99, 0.03) 0%, transparent 70%);
+  }
+}
+
+// 专业主题样式
+body.theme-professional .error-content {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(44, 62, 80, 0.03) 0%, transparent 70%);
+  }
+}
+
+// 白天主题样式
+body.theme-day .error-content {
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(33, 150, 243, 0.15);
+  
+  &::before {
+    background: radial-gradient(circle, rgba(33, 150, 243, 0.03) 0%, transparent 70%);
+  }
+}
+
+.error-icon {
+  margin-bottom: 2rem;
+  
+  svg {
+    width: 80px;
+    height: 80px;
+    color: var(--primary);
+    opacity: 0.8;
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+// 夜间主题样式
+body.theme-night .error-icon svg {
+  color: #bb86fc;
+}
+
+// 阳光主题样式
+body.theme-sunny .error-icon svg {
+  color: #ff6b35;
+}
+
+// 宁静主题样式
+body.theme-calm .error-icon svg {
+  color: #4caf50;
+}
+
+// 活力主题样式
+body.theme-energetic .error-icon svg {
+  color: #9c27b0;
+}
+
+// 温馨主题样式
+body.theme-cozy .error-icon svg {
+  color: #8d6e63;
+}
+
+// 专业主题样式
+body.theme-professional .error-icon svg {
+  color: #2c3e50;
+}
+
+// 白天主题样式
+body.theme-day .error-icon svg {
+  color: #2196f3;
+}
+
+.error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  
+  @include responsive(mobile) {
+    font-size: 1.5rem;
+  }
+}
+
+// 夜间主题样式
+body.theme-night .error-title {
+  color: #ffffff;
+}
+
+// 阳光主题样式
+body.theme-sunny .error-title {
+  color: #2e2e2e;
+}
+
+// 宁静主题样式
+body.theme-calm .error-title {
+  color: #2e2e2e;
+}
+
+// 活力主题样式
+body.theme-energetic .error-title {
+  color: #2e2e2e;
+}
+
+// 温馨主题样式
+body.theme-cozy .error-title {
+  color: #3e2723;
+}
+
+// 专业主题样式
+body.theme-professional .error-title {
+  color: #2c3e50;
+}
+
+// 白天主题样式
+body.theme-day .error-title {
+  color: #212121;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @include responsive(mobile) {
+    font-size: 1rem;
+  }
+}
+
+// 夜间主题样式
+body.theme-night .error-message {
+  color: #b3b3b3;
+}
+
+// 阳光主题样式
+body.theme-sunny .error-message {
+  color: #666;
+}
+
+// 宁静主题样式
+body.theme-calm .error-message {
+  color: #666;
+}
+
+// 活力主题样式
+body.theme-energetic .error-message {
+  color: #666;
+}
+
+// 温馨主题样式
+body.theme-cozy .error-message {
+  color: #666;
+}
+
+// 专业主题样式
+body.theme-professional .error-message {
+  color: #7f8c8d;
+}
+
+// 白天主题样式
+body.theme-day .error-message {
+  color: #757575;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  
+  .button {
+    min-width: 120px;
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    border-radius: $border-radius-lg;
+    transition: all $transition-normal;
+    
+    &.button-primary {
+      background: var(--primary);
+      color: white;
+      border: 2px solid var(--primary);
+      
+      &:hover {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+      }
+    }
+    
+    &.button-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 2px solid var(--border-color);
+      
+      &:hover {
+        background: var(--text-secondary);
+        color: white;
+        border-color: var(--text-secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    @include responsive(mobile) {
+      min-width: 100px;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// 夜间主题样式
+body.theme-night .error-actions .button {
+  &.button-primary {
+    background: #bb86fc;
+    border-color: #bb86fc;
+    
+    &:hover {
+      background: #a66ffc;
+      border-color: #a66ffc;
+    }
+  }
+  
+  &.button-secondary {
+    color: #b3b3b3;
+    border-color: #0a0a0a;
+    
+    &:hover {
+      background: #b3b3b3;
+      color: #121212;
+      border-color: #b3b3b3;
+    }
+  }
+}
+
+// 阳光主题样式
+body.theme-sunny .error-actions .button {
+  &.button-primary {
+    background: #ff6b35;
+    border-color: #ff6b35;
+    
+    &:hover {
+      background: #e55a2b;
+      border-color: #e55a2b;
+    }
+  }
+  
+  &.button-secondary {
+    color: #666;
+    border-color: #ffcc80;
+    
+    &:hover {
+      background: #666;
+      color: white;
+      border-color: #666;
+    }
+  }
+}
+
+// 宁静主题样式
+body.theme-calm .error-actions .button {
+  &.button-primary {
+    background: #4caf50;
+    border-color: #4caf50;
+    
+    &:hover {
+      background: #388e3c;
+      border-color: #388e3c;
+    }
+  }
+  
+  &.button-secondary {
+    color: #666;
+    border-color: #a5d6a7;
+    
+    &:hover {
+      background: #666;
+      color: white;
+      border-color: #666;
+    }
+  }
+}
+
+// 活力主题样式
+body.theme-energetic .error-actions .button {
+  &.button-primary {
+    background: #9c27b0;
+    border-color: #9c27b0;
+    
+    &:hover {
+      background: #7b1fa2;
+      border-color: #7b1fa2;
+    }
+  }
+  
+  &.button-secondary {
+    color: #666;
+    border-color: #ce93d8;
+    
+    &:hover {
+      background: #666;
+      color: white;
+      border-color: #666;
+    }
+  }
+}
+
+// 温馨主题样式
+body.theme-cozy .error-actions .button {
+  &.button-primary {
+    background: #8d6e63;
+    border-color: #8d6e63;
+    
+    &:hover {
+      background: #6d4c41;
+      border-color: #6d4c41;
+    }
+  }
+  
+  &.button-secondary {
+    color: #666;
+    border-color: #bcaaa4;
+    
+    &:hover {
+      background: #666;
+      color: white;
+      border-color: #666;
+    }
+  }
+}
+
+// 专业主题样式
+body.theme-professional .error-actions .button {
+  &.button-primary {
+    background: #2c3e50;
+    border-color: #2c3e50;
+    
+    &:hover {
+      background: #1a252f;
+      border-color: #1a252f;
+    }
+  }
+  
+  &.button-secondary {
+    color: #7f8c8d;
+    border-color: #bdc3c7;
+    
+    &:hover {
+      background: #7f8c8d;
+      color: white;
+      border-color: #7f8c8d;
+    }
+  }
+}
+
+// 白天主题样式
+body.theme-day .error-actions .button {
+  &.button-primary {
+    background: #2196f3;
+    border-color: #2196f3;
+    
+    &:hover {
+      background: #1976d2;
+      border-color: #1976d2;
+    }
+  }
+  
+  &.button-secondary {
+    color: #757575;
+    border-color: #e0e0e0;
+    
+    &:hover {
+      background: #757575;
+      color: white;
+      border-color: #757575;
+    }
+  }
+}
+
+// 动画效果
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(180deg);
+  }
+}
+
+// 响应式设计
+@include responsive(mobile) {
+  .error-display {
+    padding: 1rem;
+  }
+  
+  .error-content {
+    padding: 2rem 1.5rem;
+  }
+  
+  .error-icon svg {
+    width: 60px;
+    height: 60px;
+  }
+} 
