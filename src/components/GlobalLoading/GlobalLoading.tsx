@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './LoadingAnimation.scss';
-
-interface LoadingAnimationProps {
-  getText: (key: string) => string;
-  theme: string;
-}
+import { store } from '@/store';
+import './GlobalLoading.scss';
 
 // 默认的加载文本
 const DEFAULT_LOADING_TEXTS = {
@@ -19,17 +15,24 @@ const DEFAULT_LOADING_TEXTS = {
   'LOADING_MESSAGE_8': '加载完成！',
 };
 
-const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ getText, theme }) => {
+const GlobalLoading: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true); // 默认显示
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
+  useEffect(() => {
+    // 监听 store 中的加载状态
+    const unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+      setIsLoading(state.app.isLoading);
+    });
+
+    return unsubscribe;
+  }, []);
 
   // 获取文本，如果返回的是原始键名，则使用默认值
   const getTextWithDefault = (key: string): string => {
-    const text = getText(key);
-    // 如果返回的文本包含 "LOADING_" 且等于键名，说明多语言还没加载，使用默认值
-    if (text === key && key.startsWith('LOADING_')) {
-      return DEFAULT_LOADING_TEXTS[key as keyof typeof DEFAULT_LOADING_TEXTS] || key;
-    }
-    return text;
+    // 直接返回默认值，因为这是全局加载组件
+    return DEFAULT_LOADING_TEXTS[key as keyof typeof DEFAULT_LOADING_TEXTS] || key;
   };
 
   const messages = [
@@ -54,8 +57,10 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ getText, theme }) =
     };
   }, [messages.length]);
 
+  if (!isLoading) return null;
+
   return (
-    <div className="loading-animation visible" data-theme={theme}>
+    <div className="global-loading visible" data-theme="default">
       <div className="loading-container">
         {/* 眼睛图标 */}
         <div className="eye-icon">
@@ -94,4 +99,4 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ getText, theme }) =
   );
 };
 
-export default LoadingAnimation; 
+export default GlobalLoading; 

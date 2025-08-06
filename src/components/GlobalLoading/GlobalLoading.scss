@@ -1,6 +1,6 @@
 @use '../../styles/variables' as *;
 
-.loading-animation {
+.global-loading {
   position: fixed;
   top: 0;
   left: 0;
@@ -222,7 +222,7 @@
 
 // 响应式设计
 @media (max-width: $breakpoint-mobile) {
-  .loading-animation {
+  .global-loading {
     .loading-container {
       padding: 1rem;
       max-width: 90%;
@@ -264,13 +264,13 @@
 
 // 深色主题适配
 @media (prefers-color-scheme: dark) {
-  .loading-animation {
+  .global-loading {
     background: var(--background-dark);
   }
 }
 
 // 主题色适配 - 使用CSS变量实现动态主题色
-.loading-animation {
+.global-loading {
   .eye-icon .eye {
     background: var(--primary);
     box-shadow: 0 0 20px var(--primary);
