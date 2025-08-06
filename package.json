@@ -9,7 +9,7 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "dev": "npm run check-node && npm run generate-all && vite",
+    "dev": "npm run check-node && npm run generate-articles && npm run convert-articles && npm run generate-locales:watch & vite",
     "build": "npm run check-node && npm run clean && npm run generate-all && tsc && NODE_ENV=production vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -17,7 +17,9 @@
     "check-node": "node scripts/checkNodeVersion.js",
     "generate-articles": "node scripts/generateArticles.js",
     "convert-articles": "node scripts/convertArticlesToJson.js",
-    "generate-all": "npm run generate-articles && npm run convert-articles",
+    "generate-locales": "node scripts/generateLocales.js",
+    "generate-locales:watch": "node scripts/generateLocales.js --watch",
+    "generate-all": "npm run generate-articles && npm run convert-articles && npm run generate-locales",
     "deploy": "./scripts/deploy.sh",
     "prepare": "husky"
   },

@@ -64,3 +64,39 @@ export const validateLanguageFiles = async () => {
   
   console.log('=== 验证完成 ===');
 }; 
+
+// 测试多语言系统是否正常工作
+export async function testLanguageSystem() {
+  try {
+    // 测试从 data 目录获取中文数据
+    const zhResponse = await fetch('/data/locales/zh-CN.json');
+    if (!zhResponse.ok) {
+      throw new Error(`Failed to fetch zh-CN.json: ${zhResponse.statusText}`);
+    }
+    const zhData = await zhResponse.json();
+    console.log('✅ 中文数据加载成功:', Object.keys(zhData).length, '个键');
+
+    // 测试从 data 目录获取英文数据
+    const enResponse = await fetch('/data/locales/en-US.json');
+    if (!enResponse.ok) {
+      throw new Error(`Failed to fetch en-US.json: ${enResponse.statusText}`);
+    }
+    const enData = await enResponse.json();
+    console.log('✅ 英文数据加载成功:', Object.keys(enData).length, '个键');
+
+    // 测试一些关键键是否存在
+    const testKeys = ['SITE_TITLE', 'HOME', 'ARTICLES', 'ABOUT'];
+    for (const key of testKeys) {
+      if (zhData[key] && enData[key]) {
+        console.log(`✅ ${key}: 中文="${zhData[key]}" 英文="${enData[key]}"`);
+      } else {
+        console.warn(`⚠️ ${key}: 中文=${!!zhData[key]} 英文=${!!enData[key]}`);
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ 多语言系统测试失败:', error);
+    return false;
+  }
+} 

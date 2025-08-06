@@ -1,15 +1,8 @@
 import { Language, LocaleData, LocaleVariables } from '@/types';
 import { DEFAULT_LANGUAGE, STORAGE_KEYS } from '@/constants';
 
-// 直接导入语言文件
-import zhCNLocale from '@/locales/zh-CN.json';
-import enUSLocale from '@/locales/en-US.json';
-
 // 语言文件缓存
-const localeCache: Record<Language, LocaleData> = {
-  'zh-CN': zhCNLocale,
-  'en-US': enUSLocale,
-} as Record<Language, LocaleData>;
+const localeCache: Record<Language, LocaleData> = {} as Record<Language, LocaleData>;
 
 // 加载状态
 let isInitialized = false;
@@ -38,12 +31,28 @@ class LanguageService {
     return ['zh-CN', 'en-US'].includes(lang);
   }
 
+  // 从data目录加载语言文件
+  private async loadLocaleData(language: Language): Promise<LocaleData> {
+    try {
+      const response = await fetch(`/data/locales/${language}.json`);
+      if (!response.ok) {
+        throw new Error(`Failed to load locale data for ${language}: ${response.statusText}`);
+      }
+      const data = await response.json();
+      localeCache[language] = data;
+      return data;
+    } catch (error) {
+      console.error(`Failed to load locale data for ${language}:`, error);
+      return {};
+    }
+  }
+
   // 初始化当前语言
   private async initializeCurrentLanguage(): Promise<void> {
     if (isInitialized) return;
     
     try {
-      // 语言文件已经通过导入加载，无需额外操作
+      await this.loadLocaleData(this.currentLanguage);
       isInitialized = true;
     } catch (error) {
       console.error('Failed to initialize current language:', error);
@@ -64,7 +73,7 @@ class LanguageService {
     try {
       localStorage.setItem(STORAGE_KEYS.LANGUAGE, language);
       // 预加载新语言文件
-      // 语言文件已经通过导入加载，无需额外操作
+      await this.loadLocaleData(language);
     } catch (error) {
       console.warn('Failed to save language to storage:', error);
     }
@@ -95,7 +104,9 @@ class LanguageService {
    */
   async getTextAsync(key: string, variables?: LocaleVariables): Promise<string> {
     // 确保语言文件已加载
-    // 语言文件已经通过导入加载，无需额外操作
+    if (!localeCache[this.currentLanguage]) {
+      await this.loadLocaleData(this.currentLanguage);
+    }
     
     return this.getText(key, variables);
   }
@@ -117,13 +128,22 @@ class LanguageService {
   }
 
   async getLocaleDataAsync(): Promise<LocaleData> {
-    // 语言文件已经通过导入加载，无需额外操作
+    if (!localeCache[this.currentLanguage]) {
+      await this.loadLocaleData(this.currentLanguage);
+    }
     return localeCache[this.currentLanguage];
   }
 
   async getAllLocales(): Promise<Record<Language, LocaleData>> {
     // 预加载所有语言文件
-    // 语言文件已经通过导入加载，无需额外操作
+    const languages: Language[] = ['zh-CN', 'en-US'];
+    await Promise.all(
+      languages.map(async (lang) => {
+        if (!localeCache[lang]) {
+          await this.loadLocaleData(lang);
+        }
+      })
+    );
     
     return localeCache;
   }
@@ -133,7 +153,10 @@ class LanguageService {
     if (isInitialized) return;
     
     try {
-      // 语言文件已经通过导入加载，无需额外操作
+      const languages: Language[] = ['zh-CN', 'en-US'];
+      await Promise.all(
+        languages.map(lang => this.loadLocaleData(lang))
+      );
       isInitialized = true;
     } catch (error) {
       console.error('Failed to preload locales:', error);
