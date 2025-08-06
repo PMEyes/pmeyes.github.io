@@ -112,5 +112,14 @@
   "THEME_NIGHT_NAME": "夜间主题",
   "THEME_NIGHT_DESCRIPTION": "深色护眼主题，适合夜间使用",
   "THEME_NIGHT_MOOD": "舒适",
-  "THEME_PREVIEW_NAV": "主题预览"
+  "THEME_PREVIEW_NAV": "主题预览",
+  "LOADING_TITLE": "正在加载",
+  "LOADING_MESSAGE_1": "每一个项目都是一次成长的机会",
+  "LOADING_MESSAGE_2": "用专业的眼光看待每一个挑战",
+  "LOADING_MESSAGE_3": "项目管理是一门艺术，也是一门科学",
+  "LOADING_MESSAGE_4": "细节决定成败，态度决定高度",
+  "LOADING_MESSAGE_5": "成功的项目背后都有不为人知的努力",
+  "LOADING_MESSAGE_6": "用智慧的眼睛发现项目中的机遇",
+  "LOADING_MESSAGE_7": "每一次失败都是通往成功的阶梯",
+  "LOADING_MESSAGE_8": "项目管理者的眼光决定项目的未来"
 }
