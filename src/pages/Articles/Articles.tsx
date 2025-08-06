@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
 import { ArticleMeta, Language, SearchFilters } from '@/types';
@@ -23,18 +23,24 @@ interface ArticlesProps {
 
 const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
   const { language, articles, loading, error, onSearch, onRetry } = contextValue;
-  const [searchParams] = useSearchParams();
+  
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [originalFolderTree, setOriginalFolderTree] = useState<any[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<string>('');
   const [showMobileFolderModal, setShowMobileFolderModal] = useState<boolean>(false);
   const [totalArticlesCount, setTotalArticlesCount] = useState<number>(0);
+  const [lastSearchFilters, setLastSearchFilters] = useState<string>('');
 
   useEffect(() => {
-    const loadTags = () => {
-      const tags = articleService.getAllTags();
-      setAllTags(tags);
+    const loadTags = async () => {
+      try {
+        await articleService.getAllArticles();
+        const tags = articleService.getAllTags();
+        setAllTags(tags);
+      } catch (error) {
+        console.error('加载标签失败:', error);
+      }
     };
     loadTags();
   }, []);
@@ -57,34 +63,41 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
     buildFolderTree();
   }, [articles]);
 
-  useEffect(() => {
-    const tagParam = searchParams.get('tag');
-    const folderParam = searchParams.get('folder');
-    
-    // 处理标签参数
-    if (tagParam) {
-      setSelectedTags([tagParam]);
-      onSearch({ query: '', tags: [tagParam] });
-    }
-    
-    // 处理目录参数
-    if (folderParam && folderParam !== selectedFolder) {
-      setSelectedFolder(folderParam);
-      handleFolderClick(folderParam, false); // 不更新标签，避免重复
-    } else if (!folderParam && selectedFolder) {
-      // 如果URL中没有目录参数但当前有选中的目录，清除目录选择
-      setSelectedFolder('');
-      onSearch({ query: '', tags: [], folder: '' });
-    }
-  }, [searchParams, onSearch, selectedFolder]);
+  // 移除这个 useEffect，避免与 handleFolderClick 冲突
+  // useEffect(() => {
+  //   const tagParam = searchParams.get('tag');
+  //   const folderParam = searchParams.get('folder');
+  //   
+  //   console.log('URL params changed - tag:', tagParam, 'folder:', folderParam);
+  //   
+  //   // 处理标签参数
+  //   if (tagParam) {
+  //     setSelectedTags([tagParam]);
+  //     onSearch({ query: '', tags: [tagParam] });
+  //   }
+  //   
+  //   // 处理目录参数
+  //   if (folderParam && folderParam !== selectedFolder) {
+  //     console.log('Setting folder from URL:', folderParam);
+  //     setSelectedFolder(folderParam);
+  //     // 直接调用搜索，避免重复调用 handleFolderClick
+  //     onSearch({ query: '', tags: [], folder: folderParam });
+  //   } else if (!folderParam && selectedFolder) {
+  //     // 如果URL中没有目录参数但当前有选中的目录，清除目录选择
+  //     console.log('Clearing folder selection from URL');
+  //     setSelectedFolder('');
+  //     onSearch({ query: '', tags: [], folder: '' });
+  //   }
+  // }, [searchParams]); // 移除 onSearch 和 selectedFolder 依赖，避免循环
 
-  // 当组件挂载时，如果有选中的目录，确保筛选状态正确
-  useEffect(() => {
-    if (selectedFolder && articles.length === 0) {
-      // 如果有选中的目录但没有文章，重新应用筛选
-      handleFolderClick(selectedFolder, false);
-    }
-  }, [selectedFolder, articles.length]);
+  // 移除这个 useEffect，避免重复搜索
+  // useEffect(() => {
+  //   if (selectedFolder && articles.length === 0) {
+  //     // 如果有选中的目录但没有文章，重新应用筛选
+  //     console.log('Re-applying folder filter for:', selectedFolder);
+  //     onSearch({ query: '', tags: [], folder: selectedFolder });
+  //   }
+  // }, [selectedFolder]); // 移除 onSearch 依赖，避免循环
 
   const getLocaleDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -105,52 +118,77 @@ const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
 
   const handleClearFilters = () => {
     setSelectedTags([]);
-    // 清除标签筛选，但保持目录筛选
+    
     if (selectedFolder) {
       onSearch({ query: '', tags: [], folder: selectedFolder });
     } else {
       onSearch({ query: '', tags: [], folder: '' });
     }
-  };
-
-  const handleFolderClick = (folderPath: string, updateTags: boolean = true) => {
-    setSelectedFolder(folderPath);
-    // 根据目录筛选文章
-    if (folderPath) {
-      // 从原始数据中获取该目录下文章的所有标签
-      if (updateTags) {
+    
+    // 更新标签列表
+    setTimeout(() => {
+      if (selectedFolder) {
         const allArticles = articleService.getAllArticles();
         allArticles.then(articles => {
           const folderArticles = articles.filter(article => {
-            // 精确匹配文件夹
-            if (article.folder === folderPath) {
-              return true;
-            }
-            // 检查是否是子文件夹
-            if (article.folder && article.folder.startsWith(folderPath + '/')) {
-              return true;
-            }
+            if (article.folder === selectedFolder) return true;
+            if (article.folder && article.folder.startsWith(selectedFolder + '/')) return true;
             return false;
           });
+          
           const folderTags = new Set<string>();
           folderArticles.forEach(article => {
             article.tags.forEach(tag => folderTags.add(tag));
           });
           
-          // 更新标签列表为目录下的实际标签
           setAllTags(Array.from(folderTags).sort());
         });
-      }
-      
-      onSearch({ query: '', tags: [], folder: folderPath });
-    } else {
-      // 如果清空目录选择，显示所有文章和所有标签
-      if (updateTags) {
+      } else {
         const allTags = articleService.getAllTags();
         setAllTags(allTags);
       }
-      // 直接调用 loadArticles 而不是 onClearSearch，避免状态冲突
-      onSearch({ query: '', tags: [], folder: '' });
+    }, 100);
+  };
+
+  const handleFolderClick = (folderPath: string, updateTags: boolean = true) => {
+    if (selectedFolder === folderPath) {
+      return;
+    }
+    
+    const searchFilters = { query: '', tags: [], folder: folderPath };
+    const filtersKey = JSON.stringify(searchFilters);
+    
+    if (lastSearchFilters === filtersKey) {
+      return;
+    }
+    
+    setSelectedFolder(folderPath);
+    setLastSearchFilters(filtersKey);
+    onSearch(searchFilters);
+    
+    if (updateTags) {
+      setTimeout(() => {
+        if (folderPath) {
+          const allArticles = articleService.getAllArticles();
+          allArticles.then(articles => {
+            const folderArticles = articles.filter(article => {
+              if (article.folder === folderPath) return true;
+              if (article.folder && article.folder.startsWith(folderPath + '/')) return true;
+              return false;
+            });
+            
+            const folderTags = new Set<string>();
+            folderArticles.forEach(article => {
+              article.tags.forEach(tag => folderTags.add(tag));
+            });
+            
+            setAllTags(Array.from(folderTags).sort());
+          });
+        } else {
+          const allTags = articleService.getAllTags();
+          setAllTags(allTags);
+        }
+      }, 100);
     }
   };
 

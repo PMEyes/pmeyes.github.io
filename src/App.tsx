@@ -37,20 +37,19 @@ function AppContent() {
   } = useLocaleRegistration({
     autoRegister: true,
     onRegistrationComplete: () => {
-      console.log('Locale service registered successfully');
+      // 语言包注册完成
     },
     onRegistrationError: (error) => {
       console.error('Locale registration failed:', error);
     },
-    onLanguageSwitch: (language) => {
-      console.log(`Language switched to: ${language}`);
+    onLanguageSwitch: () => {
+      // 语言切换完成
     },
   });
 
   // 1. 语言包注册完成后，初始化主题
   useEffect(() => {
     if (isRegistered) {
-      console.log('Initializing theme...');
       themeService.initializeTheme();
     }
   }, [isRegistered]);
@@ -65,7 +64,6 @@ function AppContent() {
   // 3. 所有初始化完成后，隐藏加载动画
   useEffect(() => {
     if (isRegistered && !loading && !localeLoading) {
-      console.log('All initialization completed, hiding loading animation');
       loadingService.hide();
     }
   }, [isRegistered, loading, localeLoading]);
@@ -81,12 +79,10 @@ function AppContent() {
   // 加载文章数据
   const loadArticles = async () => {
     try {
-      console.log('Loading articles...');
       setLoading(true);
       setError(null);
       const articlesData = await articleService.getAllArticles();
       setArticles(articlesData);
-      console.log('Articles loaded successfully');
     } catch (err) {
       console.error('Failed to load articles:', err);
       setError(err instanceof Error ? err.message : '加载文章失败');
@@ -113,9 +109,12 @@ function AppContent() {
       setLoading(true);
       setError(null);
       setSearchFilters(filters);
+      
       const searchResults = await articleService.searchArticles(filters);
       setArticles(searchResults);
+      
     } catch (err) {
+      console.error('搜索错误:', err);
       setError(err instanceof Error ? err.message : '搜索失败');
     } finally {
       setLoading(false);
@@ -124,7 +123,6 @@ function AppContent() {
 
   const handleClearSearch = () => {
     setSearchFilters({ query: '', tags: [] });
-    // 清除所有筛选条件，包括目录筛选
     loadArticles();
   };
 
