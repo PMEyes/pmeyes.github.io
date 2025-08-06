@@ -17,13 +17,12 @@ interface ArticlesProps {
     loading: boolean;
     error: string | null;
     onSearch: (filters: SearchFilters) => void;
-    onClearSearch: () => void;
     onRetry: () => void;
   };
 }
 
 const Articles: React.FC<ArticlesProps> = ({ contextValue }) => {
-  const { language, articles, loading, error, onSearch, onClearSearch, onRetry } = contextValue;
+  const { language, articles, loading, error, onSearch, onRetry } = contextValue;
   const [searchParams] = useSearchParams();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
