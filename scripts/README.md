@@ -327,17 +327,21 @@ npm run check-node
 
 ## 集成到项目脚本
 
-所有主要的 npm 脚本都会在运行前自动检查 Node.js 版本：
+核心开发脚本会在运行前自动检查 Node.js 版本：
 
-- `npm run dev` - 开发服务器
-- `npm run build` - 构建项目
+- `npm run dev` - 开发服务器（会检查版本）
+- `npm run build` - 构建项目（会检查版本）
+
+其他脚本不会检查版本，以提高执行效率：
+
 - `npm run lint` - 代码检查
 - `npm run preview` - 预览构建结果
 - `npm run generate-articles` - 生成文章
 - `npm run convert-articles` - 转换文章
+- `npm run generate-all` - 生成所有内容
 - `npm run deploy` - 部署项目
 
-如果 Node.js 版本不符合要求，脚本会：
+如果 Node.js 版本不符合要求，相关脚本会：
 1. 显示当前版本和要求版本
 2. 提供升级指南的链接
 3. 退出执行，防止兼容性问题
