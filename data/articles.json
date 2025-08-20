@@ -103,6 +103,38 @@
       "readingTime": 12,
       "folder": "高项学习/每一天",
       "filePath": "高项学习/每一天/项目管理十大管理详解.md"
+    },
+    {
+      "id": "computer-based-exam-guide",
+      "title": "机考相关介绍",
+      "excerpt": "基于考生反馈的计算机考试详细指南，包含考场环境、考试流程、注意事项等实用信息",
+      "publishedAt": "2024-01-15T00:00:00.000Z",
+      "tags": [
+        "高项考试",
+        "机考指南",
+        "考试技巧",
+        "考场注意事项"
+      ],
+      "slug": "computer-based-exam-guide",
+      "readingTime": 8,
+      "folder": "高项学习/第二天",
+      "filePath": "高项学习/第二天/机考相关介绍.md"
+    },
+    {
+      "id": "high-level-exam-thesis-writing-guide",
+      "title": "高项考试论文写作完全指南",
+      "excerpt": "高项考试论文写作完整指南，包含框架结构、写作要求、评分标准、素材获取等关键信息",
+      "publishedAt": "2024-01-15T00:00:00.000Z",
+      "tags": [
+        "高项考试",
+        "论文写作",
+        "考试技巧",
+        "项目管理"
+      ],
+      "slug": "high-level-exam-thesis-writing-guide",
+      "readingTime": 12,
+      "folder": "高项学习/第二天",
+      "filePath": "高项学习/第二天/高项考试论文写作完全指南.md"
     }
   ],
   "folderTree": [
@@ -123,6 +155,39 @@
         }
       ],
       "children": [
+        {
+          "path": "高项学习/第二天",
+          "name": "第二天",
+          "articles": [
+            {
+              "id": "computer-based-exam-guide",
+              "title": "机考相关介绍",
+              "slug": "computer-based-exam-guide",
+              "publishedAt": "2024-01-15T00:00:00.000Z",
+              "readingTime": 8,
+              "tags": [
+                "高项考试",
+                "机考指南",
+                "考试技巧",
+                "考场注意事项"
+              ]
+            },
+            {
+              "id": "high-level-exam-thesis-writing-guide",
+              "title": "高项考试论文写作完全指南",
+              "slug": "high-level-exam-thesis-writing-guide",
+              "publishedAt": "2024-01-15T00:00:00.000Z",
+              "readingTime": 12,
+              "tags": [
+                "高项考试",
+                "论文写作",
+                "考试技巧",
+                "项目管理"
+              ]
+            }
+          ],
+          "children": []
+        },
         {
           "path": "高项学习/每一天",
           "name": "每一天",
@@ -219,5 +284,5 @@
       "children": []
     }
   ],
-  "lastUpdated": "2025-08-06T15:03:00.088Z"
+  "lastUpdated": "2025-08-20T15:08:55.473Z"
 }
