@@ -187,13 +187,17 @@
       "filePath": "高项学习/第二天/高项考试论文写作完全指南.md"
     },
     {
-      "id": "信息化发展",
+      "id": "informationization-development",
       "title": "信息化发展",
-      "excerpt": "# 1.1 信息与信息化\n\n## 1.1.1 信息\n\n### 信息的含义\n信息是物质、能量及其属性的标示的集合，是**确定性的增加**。它**以物质介质为载体**，传递和反映世界各种事物存在方式、运动状态等的表征。**信息不是物质，也不是能量。**\n\n### 1、信息的定义\n“信息是用来**消除随机...",
-      "publishedAt": "2026-02-26",
-      "tags": [],
-      "slug": "信息化发展",
-      "readingTime": 1,
+      "excerpt": "高项教材 1.1 节：信息与信息化的含义、信息系统抽象模型与生命周期、信息化内涵与体系、信息化趋势。",
+      "publishedAt": "2025-08-01T00:00:00.000Z",
+      "tags": [
+        "高项学习",
+        "信息化",
+        "信息系统"
+      ],
+      "slug": "informationization-development",
+      "readingTime": 8,
       "folder": "高项学习/第四天",
       "filePath": "高项学习/第四天/信息化发展.md"
     }
@@ -302,12 +306,16 @@
           "name": "第四天",
           "articles": [
             {
-              "id": "信息化发展",
+              "id": "informationization-development",
               "title": "信息化发展",
-              "slug": "信息化发展",
-              "publishedAt": "2026-02-26",
-              "readingTime": 1,
-              "tags": []
+              "slug": "informationization-development",
+              "publishedAt": "2025-08-01T00:00:00.000Z",
+              "readingTime": 8,
+              "tags": [
+                "高项学习",
+                "信息化",
+                "信息系统"
+              ]
             }
           ],
           "children": []
@@ -408,5 +416,5 @@
       "children": []
     }
   ],
-  "lastUpdated": "2026-02-26T13:58:16.485Z"
+  "lastUpdated": "2026-02-26T14:14:38.401Z"
 }
