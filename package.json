@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "npm run check-node && npm run generate-articles && npm run convert-articles && npm run generate-locales:watch & vite",
-    "build": "npm run check-node && npm run clean && npm run generate-all && tsc && NODE_ENV=production vite build",
+    "build": "npm run check-node && npm run clean && npm run generate-all && npm run compress-assets && tsc && NODE_ENV=production vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "clean": "rm -rf dist",
@@ -21,7 +21,8 @@
     "generate-locales:watch": "node scripts/generateLocales.js --watch",
     "generate-all": "npm run generate-articles && npm run convert-articles && npm run generate-locales",
     "deploy": "./scripts/deploy.sh",
-    "prepare": "husky"
+    "prepare": "husky",
+    "compress-assets": "node scripts/compressImages.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
@@ -53,6 +54,7 @@
     "path": "^0.12.7",
     "sass": "^1.89.2",
     "semver": "^7.7.2",
+    "sharp": "^0.33.5",
     "typescript": "^5.0.2",
     "vite": "^7.0.6"
   }

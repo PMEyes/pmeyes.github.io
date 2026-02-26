@@ -9,6 +9,7 @@ scripts/
 ├── README.md                    # 本文档
 ├── generateArticles.js          # 文章元数据生成脚本
 ├── convertArticlesToJson.js     # Markdown转JSON脚本
+├── compressImages.js            # 图片压缩脚本（≤10KB）
 ├── deploy.sh                    # 部署脚本
 └── test-deploy.sh              # 测试部署脚本
 ```
@@ -131,6 +132,29 @@ npm run generate-articles && npm run convert-articles
 2. 运行 `convertArticlesToJson.js` 转换 JSON 文件
 3. 如果第一步失败，不会执行第二步
 
+### 🖼️ compressImages.js - 图片压缩（部署前）
+
+**功能**：将 `data/assets/` 下的图片压缩到 **10KB 以内**，在构建/部署前自动执行。
+
+**输入**：
+- `data/assets/` 目录下的图片（PNG、JPEG、WebP）
+
+**行为**：
+- 已 ≤10KB 的图片跳过
+- 超过 10KB 的按质量/尺寸多档尝试，直至 ≤10KB
+- 若 PNG 无法压到 10KB 内，会转为 WebP 或 JPEG 并**自动更新**文章 JSON 中的图片引用
+
+**使用方法**：
+```bash
+# 构建时自动执行（npm run build 内含此步）
+npm run compress-assets
+
+# 或直接运行
+node scripts/compressImages.js
+```
+
+**依赖**：`sharp`（devDependencies）
+
 ### 🚀 deploy.sh - 部署脚本
 
 **功能**：自动化部署到 GitHub Pages。
@@ -178,8 +202,9 @@ npm run build
 
 1. **清理**：删除 `dist` 目录
 2. **生成所有**：`generate-all` 脚本（包含元数据生成和 JSON 转换）
-3. **编译**：TypeScript 编译
-4. **构建**：Vite 构建，复制 `src/data/` 到 `dist/data/`
+3. **压缩图片**：`compress-assets` 将 `data/assets/` 图片压至 ≤10KB
+4. **编译**：TypeScript 编译
+5. **构建**：Vite 构建，复制 `data/` 到 `dist/data/`
 
 ### 开发流程
 
