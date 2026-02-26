@@ -275,5 +275,43 @@
       margin: 0.75rem 0;
       color: $text-secondary;
     }
+
+    // 文章内图片容器（图+说明）
+    .article-content__img-wrap {
+      display: block;
+      margin: 1.5rem 0;
+      text-align: center;
+
+      @include responsive(mobile) {
+        margin: 1rem 0;
+      }
+    }
+
+    .article-content__img-wrap img,
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 8px;
+      @include responsive(mobile) {
+        border-radius: 6px;
+      }
+    }
+
+    .article-content__img-caption {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: $text-secondary;
+      line-height: 1.4;
+    }
+
+    // 图片与前后段落间距
+    p + .article-content__img-wrap,
+    .article-content__img-wrap + p {
+      margin-top: 1.25rem;
+    }
   }
 }

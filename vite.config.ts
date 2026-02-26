@@ -76,19 +76,29 @@ function pwaPlugin() {
         }))
       })
 
-      // 处理数据文件请求 - 简化版本
+      // 处理数据文件请求（含 JSON 与 data/assets 下的图片等静态资源）
       server.middlewares.use((req, res, next) => {
         if (req.url && req.url.startsWith('/data/')) {
-          const filePath = req.url.replace('/data/', '')
+          const pathname = req.url.split('?')[0]
+          const filePath = decodeURIComponent(pathname.replace(/^\/data\//, ''))
           const fullPath = path.resolve(__dirname, 'data', filePath)
-          
-          if (fs.existsSync(fullPath)) {
-            const ext = path.extname(fullPath)
-            const contentType = ext === '.json' ? 'application/json' : 'text/plain'
-            
+          if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+            const ext = path.extname(fullPath).toLowerCase()
+            const mime: Record<string, string> = {
+              '.json': 'application/json',
+              '.png': 'image/png',
+              '.jpg': 'image/jpeg',
+              '.jpeg': 'image/jpeg',
+              '.gif': 'image/gif',
+              '.svg': 'image/svg+xml',
+              '.webp': 'image/webp',
+              '.ico': 'image/x-icon',
+            }
+            const contentType = mime[ext] ?? 'application/octet-stream'
             res.setHeader('Content-Type', contentType)
             res.setHeader('Cache-Control', 'no-cache')
-            res.end(fs.readFileSync(fullPath, 'utf8'))
+            const buf = fs.readFileSync(fullPath)
+            res.end(buf)
             return
           }
         }

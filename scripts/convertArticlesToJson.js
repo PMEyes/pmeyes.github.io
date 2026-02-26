@@ -10,7 +10,11 @@ const __dirname = path.dirname(__filename);
 // 文章文件夹路径
 const ARTICLES_DIR = path.join(__dirname, '../articles');
 const ARTICLES_JSON_DIR = path.join(__dirname, '../data/articles-json');
+const DATA_ASSETS_DIR = path.join(__dirname, '../data/assets');
 const CACHE_FILE = path.join(__dirname, '../data/.articles-cache.json');
+
+// 作为静态资源复制的扩展名（图片等）
+const ASSET_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp', '.ico']);
 
 // 计算文件哈希值
 function calculateFileHash(filePath) {
@@ -121,6 +125,67 @@ function scanFiles(dir, basePath = '') {
   return files;
 }
 
+/**
+ * 从 Markdown 内容中提取相对路径的图片/资源引用
+ * 匹配 ![alt](url) 中的 url 为相对路径（./ 或非 http(s): 开头）
+ */
+function extractRelativeAssetRefs(content) {
+  const refs = [];
+  // 匹配 ![alt](url) 中的 url
+  const imageRegex = /!\[([^\]]*)\]\(\s*([^)\s]+)\s*\)/g;
+  let m;
+  while ((m = imageRegex.exec(content)) !== null) {
+    const url = m[2].trim();
+    if (url.startsWith('./') || url.startsWith('../') || (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/') && !url.startsWith('data:'))) {
+      refs.push({ full: m[0], url });
+    }
+  }
+  return refs;
+}
+
+/**
+ * 将文章内容中的相对资源路径替换为 /data/assets/... 并复制文件到 data/assets
+ * @param {string} markdownContent - 原始 markdown 内容
+ * @param {string} articleDirRelative - 文章所在目录相对于 articles 的路径，如 "高项学习/第四天"
+ * @returns {{ content: string, copiedCount: number }}
+ */
+function processContentAssets(markdownContent, articleDirRelative) {
+  const refs = extractRelativeAssetRefs(markdownContent);
+  let content = markdownContent;
+  let copiedCount = 0;
+  const articleDirFull = path.join(ARTICLES_DIR, articleDirRelative);
+
+  for (const { full, url } of refs) {
+    try {
+      const decodedUrl = decodeURIComponent(url);
+      const localPath = path.normalize(path.join(articleDirFull, decodedUrl.replace(/^\.\//, '')));
+      if (!fs.existsSync(localPath)) continue;
+
+      const ext = path.extname(localPath).toLowerCase();
+      if (!ASSET_EXTENSIONS.has(ext)) continue;
+
+      const fileName = path.basename(localPath);
+      const assetRelativePath = path.join(articleDirRelative, fileName).split(path.sep).join('/');
+      const destPath = path.join(DATA_ASSETS_DIR, assetRelativePath);
+      const destDir = path.dirname(destPath);
+
+      if (!fs.existsSync(destDir)) {
+        fs.mkdirSync(destDir, { recursive: true });
+      }
+      fs.copyFileSync(localPath, destPath);
+      copiedCount++;
+
+      const dataUrl = '/data/assets/' + assetRelativePath.split('/').map(encodeURIComponent).join('/');
+      const newFull = full.replace(url, dataUrl);
+      content = content.replace(full, newFull);
+    } catch (e) {
+      console.warn('处理资源引用失败:', url, e.message);
+    }
+  }
+
+  return { content, copiedCount };
+}
+
 // 更新缓存文件
 function updateCache(articles) {
   const files = {};
@@ -172,8 +237,13 @@ function scanArticles(dir, basePath = '') {
       
       // 确定文件夹路径
       const folder = basePath || '未分类';
-      
-      // 生成完整的文章 JSON 文件
+      const filePathRelative = path.relative(ARTICLES_DIR, fullPath);
+      const articleDirRelative = path.dirname(filePathRelative);
+
+      // 将内容中的相对图片/资源复制到 data/assets 并改写引用为 /data/assets/...
+      const { content: processedContent } = processContentAssets(markdownContent, articleDirRelative);
+
+      // 生成完整的文章 JSON 文件（使用改写后的 content，图片等指向 data 目录）
       const articleJson = {
         id: slug,
         title: data.title || path.basename(item, '.md'),
@@ -183,11 +253,11 @@ function scanArticles(dir, basePath = '') {
         slug: slug,
         readingTime: data.readingTime || readingTime,
         folder: folder,
-        filePath: path.relative(ARTICLES_DIR, fullPath),
-        content: markdownContent,
+        filePath: filePathRelative,
+        content: processedContent,
         rawContent: content // 包含 front matter 的原始内容
       };
-      
+
       articles.push({
         filePath: fullPath,
         slug: slug,
@@ -216,8 +286,11 @@ function main() {
     if (!fs.existsSync(ARTICLES_JSON_DIR)) {
       fs.mkdirSync(ARTICLES_JSON_DIR, { recursive: true });
     }
-    
-    // 扫描所有文章
+    if (!fs.existsSync(DATA_ASSETS_DIR)) {
+      fs.mkdirSync(DATA_ASSETS_DIR, { recursive: true });
+    }
+
+    // 扫描所有文章（会同时复制图片等静态资源到 data/assets 并改写引用）
     const articles = scanArticles(ARTICLES_DIR);
     
     let convertedCount = 0;

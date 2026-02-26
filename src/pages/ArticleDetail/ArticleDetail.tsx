@@ -117,6 +117,22 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ contextValue }) => {
           <div className="article-content">
             <ReactMarkdown
               components={{
+                img({ src, alt, ...props }) {
+                  return (
+                    <span className="article-content__img-wrap">
+                      <img
+                        src={src}
+                        alt={alt ?? ''}
+                        loading="lazy"
+                        decoding="async"
+                        {...props}
+                      />
+                      {alt ? (
+                        <span className="article-content__img-caption">{alt}</span>
+                      ) : null}
+                    </span>
+                  );
+                },
                 code({ node, inline, className, children, ...props }) {
                   const match = /language-(\w+)/.exec(className || '');
                   return !inline && match ? (
