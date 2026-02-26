@@ -54,7 +54,7 @@ function getAllImagePaths(dir, base = '') {
 }
 
 /**
- * 压缩单张图片到 ≤10KB；若已 ≤10KB 则仅做轻度压缩（可选）
+ * 仅做质量压缩，不改变图片尺寸；尽量压到 ≤10KB
  */
 async function compressToTarget(inputPath) {
   const ext = path.extname(inputPath).toLowerCase();
@@ -64,48 +64,36 @@ async function compressToTarget(inputPath) {
     return { path: inputPath, before: originalSize, after: originalSize, skipped: true };
   }
 
-  const maxWidth = 800;
   let buffer = null;
   let usedFormat = ext.slice(1);
 
-  const resize = (width) => ({
-    width: width || maxWidth,
-    fit: 'inside',
-    withoutEnlargement: true,
-  });
-
+  // 不 resize，只调质量/压缩等级，保持原图尺寸
   if (ext === '.png') {
-    const attempts = [
-      [() => sharp(inputPath).resize(resize()).png({ compressionLevel: 9 }).toBuffer(), 'png'],
-      [() => sharp(inputPath).resize(resize(600)).png({ compressionLevel: 9 }).toBuffer(), 'png'],
-      [() => sharp(inputPath).resize(resize(400)).webp({ quality: 72 }).toBuffer(), 'webp'],
-      [() => sharp(inputPath).resize(resize(400)).jpeg({ quality: 65 }).toBuffer(), 'jpeg'],
-      [() => sharp(inputPath).resize(resize(320)).jpeg({ quality: 50 }).toBuffer(), 'jpeg'],
-    ];
-    for (const [fn, fmt] of attempts) {
-      buffer = await fn();
-      usedFormat = fmt;
-      if (buffer.length <= TARGET_MAX_BYTES) break;
+    buffer = await sharp(inputPath).png({ compressionLevel: 9 }).toBuffer();
+    usedFormat = 'png';
+    if (buffer.length > TARGET_MAX_BYTES) {
+      const webp = await sharp(inputPath).webp({ quality: 80 }).toBuffer();
+      if (webp.length < buffer.length) {
+        buffer = webp;
+        usedFormat = 'webp';
+      }
     }
-    if (!buffer || buffer.length > TARGET_MAX_BYTES) {
-      buffer = await sharp(inputPath).resize(resize(280)).jpeg({ quality: 45 }).toBuffer();
-      usedFormat = 'jpeg';
+    if (buffer.length > TARGET_MAX_BYTES) {
+      const jpeg = await sharp(inputPath).jpeg({ quality: 85 }).toBuffer();
+      if (jpeg.length < buffer.length) {
+        buffer = jpeg;
+        usedFormat = 'jpeg';
+      }
     }
   } else if (ext === '.jpg' || ext === '.jpeg') {
-    for (const q of [70, 55, 42, 32]) {
-      buffer = await sharp(inputPath).resize(resize()).jpeg({ quality: q }).toBuffer();
+    for (const q of [85, 75, 65, 55]) {
+      buffer = await sharp(inputPath).jpeg({ quality: q }).toBuffer();
       if (buffer.length <= TARGET_MAX_BYTES) break;
-    }
-    if (!buffer || buffer.length > TARGET_MAX_BYTES) {
-      buffer = await sharp(inputPath).resize(resize(480)).jpeg({ quality: 38 }).toBuffer();
     }
   } else if (ext === '.webp') {
-    for (const q of [65, 50, 38]) {
-      buffer = await sharp(inputPath).resize(resize()).webp({ quality: q }).toBuffer();
+    for (const q of [80, 70, 60, 50]) {
+      buffer = await sharp(inputPath).webp({ quality: q }).toBuffer();
       if (buffer.length <= TARGET_MAX_BYTES) break;
-    }
-    if (!buffer || buffer.length > TARGET_MAX_BYTES) {
-      buffer = await sharp(inputPath).resize(resize(480)).webp({ quality: 32 }).toBuffer();
     }
   }
 
